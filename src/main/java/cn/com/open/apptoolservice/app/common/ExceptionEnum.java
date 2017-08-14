@@ -21,8 +21,15 @@ public enum ExceptionEnum {
     InsertError("100202", "添加错误"),
     DeleteError("100203", "删除错误"),
     DataFormatError("100204", "数据格式不正确"),
-    Unkow("999999","未知错误")
-    ;
+    Unkow("999999","未知错误"),
+    ParmeterNullError("1","必填参数不能为空"),
+    EntiryIsNotNull("2","订单号存在"),
+    AddEntityError("3","订单操作失败"),
+    ThirdBodyError("4","第三方系统异常"),
+    Mobileverifyresponse("5","第三方系统异常"),
+	MobileVerifySuccess("1","请求成功"),
+	UpdateEntityError("6","订单号存在");
+    
     String code;
     String message;
 

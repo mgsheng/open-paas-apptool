@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.open.apptoolservice.app.mapper.ApptoolRecordInfoMapper" >
+	<resultMap id="BaseResultMap" type="cn.com.open.apptoolservice.app.entity.ApptoolRecordInfo" >
+		<result column="id" property="id"/>
+		<result column="status" property="status"/>
+		<result column="app_key" property="appKey"/>
+		<result column="service_name" property="serviceName"/>
+		<result column="parmenter" property="parmenter"/>
+		<result column="merchant_id" property="merchantId"/>
+		<result column="source_username" property="sourceUsername"/>
+		<result column="source_uid" property="sourceUid"/>
+		<result column="create_time" property="createTime"/>
+		<result column="real_name" property="realName"/>
+		<result column="id_card" property="idCard"/>
+		<result column="phone" property="phone"/>
+		<result column="order_id" property="orderId"/>
+		<result column="third_order_no" property="thirdOrderNo"/>
+	</resultMap>
+
+	<sql id="Base_Column_List" >
+		 id,status,app_key,service_name,parmenter,merchant_id,source_username,source_uid,create_time,real_name,id_card,phone,order_id,third_order_no
+	</sql>
+
+	<sql id="Example_Where_Clause">
+		<where>
+		<if test="id != null and id != ''" >
+			and id =  #{id}
+		</if>
+	<if test="status != null" >
+			and status =  #{status}
+		</if>
+		<if test="appKey != null and appKey != ''" >
+			and app_key =  #{appKey}
+		</if>
+		<if test="serviceName != null and serviceName != ''" >
+			and service_name =  #{serviceName}
+		</if>
+		<if test="parmenter != null and parmenter != ''" >
+			and parmenter =  #{parmenter}
+		</if>
+	<if test="merchantId != null" >
+			and merchant_id =  #{merchantId}
+		</if>
+		<if test="sourceUsername != null and sourceUsername != ''" >
+			and source_username =  #{sourceUsername}
+		</if>
+		<if test="sourceUid != null and sourceUid != ''" >
+			and source_uid =  #{sourceUid}
+		</if>
+	<if test="createTime != null" >
+			and create_time =  #{createTime}
+		</if>
+		<if test="realName != null and realName != ''" >
+			and real_name =  #{realName}
+		</if>
+		<if test="idCard != null and idCard != ''" >
+			and id_card =  #{idCard}
+		</if>
+		<if test="phone != null and phone != ''" >
+			and phone =  #{phone}
+		</if>
+		</where>
+	</sql>
+
+	<insert id="insert" parameterType="Object" >
+				insert into apptool_record_info (id,status,app_key,service_name,parmenter,merchant_id,source_username,source_uid,create_time,real_name,id_card,phone,order_id) values (#{id},#{status},#{appKey},#{serviceName},#{parmenter},#{merchantId},#{sourceUsername},#{sourceUid},now(),#{realName},#{idCard},#{phone},#{orderId})
+	</insert>
+
+	<update id="update" parameterType="Object" >
+		update apptool_record_info set id = #{id},status = #{status},app_key = #{appKey},service_name = #{serviceName},parmenter = #{parmenter},merchant_id = #{merchantId},source_username = #{sourceUsername},source_uid = #{sourceUid},real_name = #{realName},id_card = #{idCard},phone = #{phone} ,third_order_no = #{thirdOrderNo},phone = #{phone}where id = #{id}
+	</update>
+
+	<update id="updateBySelective" parameterType="Object" >
+		update apptool_record_info 
+	<set>
+	<if test="status != null">
+		status = #{status},
+	</if>
+	<if test="appKey != '' and appKey != null">
+		app_key = #{appKey},
+	</if>
+	<if test="serviceName != '' and serviceName != null">
+		service_name = #{serviceName},
+	</if>
+	<if test="parmenter != null and parmenter != null">
+		parmenter = #{parmenter},
+	</if>
+	<if test="merchantId != null">
+		merchant_id = #{merchantId},
+	</if>
+	<if test="sourceUsername != '' and sourceUsername != null">
+		source_username = #{sourceUsername},
+	</if>
+	<if test="sourceUid != '' and sourceUid != null">
+		source_uid = #{sourceUid},
+	</if>
+	<if test="createTime != null">
+		create_time = #{createTime},
+	</if>
+	<if test="realName != '' and realName != null">
+		real_name = #{realName},
+	</if>
+	<if test="idCard != '' and idCard != null">
+		id_card = #{idCard},
+	</if>
+	<if test="phone != '' and phone != null">
+		phone = #{phone},
+	</if>
+	<if test="thirdOrderNo != '' and thirdOrderNo != null">
+		third_order_no = #{thirdOrderNo},
+	</if>
+	<if test="orderId != '' and orderId != null">
+		order_id = #{orderId},
+	</if>
+	</set> where id = #{id}
+	</update>
+
+	<delete id="deleteById" parameterType="Object">
+		delete from apptool_record_info where id = #{id}
+	</delete>
+
+	<select id="getById"  resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" /> from apptool_record_info where id = #{id}
+	</select>
+
+	<select id="findPageCount" resultType="java.lang.Integer"  parameterType="Object">
+		select count(1) from apptool_record_info
+		<include refid="Example_Where_Clause"/>
+	</select>
+
+	<select id="findPageList" resultMap="BaseResultMap"  parameterType="Object">
+		select
+		<include refid="Base_Column_List"/>
+		from apptool_record_info
+		<include refid="Example_Where_Clause"/>
+		<if test="mysqlQueryCondition != null and mysqlQueryCondition != ''" >
+			${mysqlQueryCondition}
+		</if>
+	</select>
+
+	<select id="findBySelective" resultMap="BaseResultMap"  parameterType="Object">
+		select
+		<include refid="Base_Column_List"/>
+		from apptool_record_info
+		<include refid="Example_Where_Clause"/>
+	</select>
+
+</mapper>   

@@ -6,8 +6,35 @@ import com.alibaba.fastjson.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BaseController {
+	
+	protected static boolean nullAndEmpty(String str){
+        return null==str||str.isEmpty()||"".equals(str.trim());
+    }
+	 protected boolean nullEmptyBlankJudge(String str){
+        return null==str||str.isEmpty()||"".equals(str.trim());
+    }
+    protected boolean paraMandatoryCheck(List<String> params){
+        for(String param:params){
+            if(nullEmptyBlankJudge(param)){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    protected boolean paramCheck(List<Integer> params){
+        for(Integer param:params){
+            if(param==-1){
+                return false;
+            }
+        }
+        return true;
+    }
 
     protected void responseErrorJason(HttpServletResponse response, String errorCode, String message) {
         responseErrorJason(response, errorCode, message, null);

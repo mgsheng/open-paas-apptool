@@ -4,6 +4,8 @@ import cn.com.open.apptoolservice.app.common.ServiceProviderEnum;
 import cn.com.open.apptoolservice.app.interceptor.VerifySignatureInterceptor;
 import cn.com.open.apptoolservice.app.service.PhoneService;
 import cn.com.open.apptoolservice.app.service.impl.AliyunPhoneServiceImpl;
+import cn.com.open.apptoolservice.app.service.impl.ZxMobileVerifyServiceImpl;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +26,8 @@ public class SystemConfig extends WebMvcConfigurerAdapter {
 
     @Value("${phone.attribution.service.provider}")
     private String phoneAttributionServiceProvider;
+    @Value("${mobile.verify.service.provider}")
+    private String mobileVerifyServiceProvider;
 
     @Bean
     public VerifySignatureInterceptor verifySignatureInterceptor() {
@@ -44,6 +48,12 @@ public class SystemConfig extends WebMvcConfigurerAdapter {
     @Bean
     public PhoneService getPhoneService() {
         if (phoneAttributionServiceProvider.equals(ServiceProviderEnum.AliyunPhoneAttribution.getValue())) return new AliyunPhoneServiceImpl();
+        return null;
+    }
+
+    @Bean
+    public ZxMobileVerifyServiceImpl getMobileVerifyService() {
+        if (mobileVerifyServiceProvider.equals(ServiceProviderEnum.TztMobileVerifyAttribution.getValue())) return new ZxMobileVerifyServiceImpl();
         return null;
     }
 
