@@ -64,6 +64,7 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
 		   	  apptoolRecordInfo.setAppKey(request.getHeader(FormEnum.APPKEY.getCode()));
 		   	  apptoolRecordInfo.setSourceUid(mobileVerifyVo.getSourceUid());
 		   	  apptoolRecordInfo.setSourceUsername(mobileVerifyVo.getSourceUserName());
+		   	  apptoolRecordInfo.setMerchantId(Integer.parseInt(mobileVerifyVo.getMerchantId()));
 		   	  apptoolRecordInfo.setServiceName(request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1));
 			  apptoolRecordInfoMapper.insert(apptoolRecordInfo);
 			  return true;

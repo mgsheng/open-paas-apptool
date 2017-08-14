@@ -50,7 +50,6 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
     @Autowired
     private ApptoolRecordInfoService apptoolRecordInfoService;
 
-    @RecordRemoteCall
     @Override
     public Result attribution(MobileVerifyVo mobileVerifyVo) throws Exception {
         String channelName = ServiceProviderEnum.getNameByValue(mobileVerifyServiceProvider);

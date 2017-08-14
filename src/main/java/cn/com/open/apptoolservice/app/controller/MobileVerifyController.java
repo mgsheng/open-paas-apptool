@@ -43,7 +43,7 @@ public class MobileVerifyController extends BaseController {
     @RequestMapping(value = "/verify", method = RequestMethod.POST)
     public void verify( HttpServletResponse response,HttpServletRequest request,MobileVerifyVo mobileVerifyVo) {
     	
-   	     if (!paraMandatoryCheck(Arrays.asList(mobileVerifyVo.getIdCard(),mobileVerifyVo.getNumber(),mobileVerifyVo.getRealName()))) {
+   	     if (!paraMandatoryCheck(Arrays.asList(mobileVerifyVo.getIdCard(),mobileVerifyVo.getNumber(),mobileVerifyVo.getRealName(),mobileVerifyVo.getMerchantId()))) {
    	    	responseErrorJason(response, ExceptionEnum.ParameterError.getCode(),ExceptionEnum.ParameterError.getMessage());
             return;
 		 }
