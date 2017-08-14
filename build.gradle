@@ -59,7 +59,7 @@ dependencies {
     compile('org.slf4j:jul-to-slf4j:1.7.6')
     compile('org.slf4j:log4j-over-slf4j:1.7.6')
     compile('com.googlecode.log4jdbc:log4jdbc:1.2')
-    compile('org.assertj:assertj-core:1.5.0:test')
+    compile('org.assertj:assertj-core:2.0.0')
     compile('com.thoughtworks.xstream:xstream:1.4.9')
     compile('org.json:json:20151123')
     compile('org.apache.directory.studio:org.dom4j.dom4j:1.6.1')
