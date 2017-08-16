@@ -3,36 +3,35 @@ package cn.com.open.apptoolservice.app.service.impl;
 import cn.com.open.apptoolservice.app.common.ExceptionEnum;
 import cn.com.open.apptoolservice.app.common.Result;
 import cn.com.open.apptoolservice.app.common.ServiceProviderEnum;
-import cn.com.open.apptoolservice.app.controller.PhoneController;
 import cn.com.open.apptoolservice.app.entity.ApptoolTradeChannel;
-import cn.com.open.apptoolservice.app.record.RecordRemoteCall;
+import cn.com.open.apptoolservice.app.log.ThirdPartyCallAssistant;
+import cn.com.open.apptoolservice.app.log.annotation.SaveAppToolRecordInfo;
+import cn.com.open.apptoolservice.app.log.support.AliyunResponseBean;
 import cn.com.open.apptoolservice.app.service.ApptoolTradeChannelService;
 import cn.com.open.apptoolservice.app.service.PhoneService;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.api.gateway.demo.constant.HttpMethod;
-import com.aliyun.api.gateway.demo.util.HttpUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AliyunPhoneServiceImpl implements PhoneService {
 
-    private final Logger log = LoggerFactory.getLogger(PhoneController.class);
+    private final Logger log = LoggerFactory.getLogger(AliyunPhoneServiceImpl.class);
 
     @Value("${phone.attribution.service.provider}")
     private String phoneAttributionServiceProvider;
     @Autowired
     private ApptoolTradeChannelService apptoolTradeChannelService;
+    @Autowired
+    private ThirdPartyCallAssistant thirdPartyCallAssistant;
 
-    @RecordRemoteCall
+    @SaveAppToolRecordInfo
     @Override
     public Result attribution(String number) throws Exception {
         String channelName = ServiceProviderEnum.getNameByValue(phoneAttributionServiceProvider);
@@ -40,18 +39,10 @@ public class AliyunPhoneServiceImpl implements PhoneService {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "APPCODE " + apptoolTradeChannel.getKeyValue());
         headers.put("Content-Type", "application/json; charset=UTF-8");
-
         Map<String, String> querys = new HashMap<>();
         querys.put("num", number);
-        HttpResponse resp = HttpUtils.doGet(apptoolTradeChannel.getRequestUrl(), null, HttpMethod.GET, headers, querys);
-
-        String headRequestId = Arrays.toString(resp.getHeaders("X-Ca-Request-Id"));
-        String headErrorMessage = Arrays.toString(resp.getHeaders("X-Ca-Error-Message"));
-        log.info(String.format("aliyun phone attribution response header { request id: %s, errorMessage: %s } ", headRequestId, headErrorMessage));
-
-        String text = EntityUtils.toString(resp.getEntity());
-        log.info(String.format("aliyun phone attribution response text { %s } ", text));
-
+        AliyunResponseBean aliyunResponseBean = thirdPartyCallAssistant.attribution(apptoolTradeChannel.getRequestUrl(), headers, HttpMethod.GET, querys, phoneAttributionServiceProvider);
+        String text = aliyunResponseBean.getJson();
         if (StringUtils.isNotEmpty(text)) {
             JSONObject jsonObject = JSONObject.parseObject(text);
             Integer resCode = jsonObject.getInteger("showapi_res_code");

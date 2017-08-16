@@ -1,4 +1,4 @@
-package cn.com.open.apptoolservice.app.record;
+package cn.com.open.apptoolservice.app.log.annotation;
 
 import java.lang.annotation.*;
 
@@ -9,5 +9,5 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Documented
 @Inherited
-public @interface RecordRemoteCall {
+public @interface SaveAppToolRecordInfo {
 }

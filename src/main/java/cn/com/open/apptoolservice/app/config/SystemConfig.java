@@ -2,12 +2,14 @@ package cn.com.open.apptoolservice.app.config;
 
 import cn.com.open.apptoolservice.app.common.ServiceProviderEnum;
 import cn.com.open.apptoolservice.app.interceptor.VerifySignatureInterceptor;
+import cn.com.open.apptoolservice.app.log.LogFilter;
 import cn.com.open.apptoolservice.app.service.PhoneService;
 import cn.com.open.apptoolservice.app.service.impl.AliyunPhoneServiceImpl;
 import cn.com.open.apptoolservice.app.service.impl.ZxMobileVerifyServiceImpl;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -38,6 +40,21 @@ public class SystemConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(verifySignatureInterceptor()).excludePathPatterns("/dnotdelet/mom.html");
         super.addInterceptors(registry);
+    }
+
+    @Bean
+    public LogFilter getLogFilter() {
+        return new LogFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean filterRegistration() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(getLogFilter());
+        registration.addUrlPatterns("/api/apptoolservice/*");
+        registration.setName("LogFilter");
+        registration.setOrder(1);
+        return registration;
     }
 
     @Bean

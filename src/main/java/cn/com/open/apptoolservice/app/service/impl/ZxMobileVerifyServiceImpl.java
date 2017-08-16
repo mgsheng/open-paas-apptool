@@ -1,31 +1,11 @@
 package cn.com.open.apptoolservice.app.service.impl;
 
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
-import org.json.XML;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-
-import com.alibaba.fastjson.JSON;
-
-import cn.com.open.apptoolservice.app.common.ExceptionEnum;
-import cn.com.open.apptoolservice.app.common.MobileResultEnum;
-import cn.com.open.apptoolservice.app.common.Result;
-import cn.com.open.apptoolservice.app.common.ServiceProviderEnum;
-import cn.com.open.apptoolservice.app.common.ZxptEntityEnum;
+import cn.com.open.apptoolservice.app.common.*;
 import cn.com.open.apptoolservice.app.controller.PhoneController;
 import cn.com.open.apptoolservice.app.entity.ApptoolRecordInfo;
 import cn.com.open.apptoolservice.app.entity.ApptoolTradeChannel;
-import cn.com.open.apptoolservice.app.record.RecordRemoteCall;
+import cn.com.open.apptoolservice.app.log.ThirdPartyCallAssistant;
+import cn.com.open.apptoolservice.app.service.ApptoolRecordInfoService;
 import cn.com.open.apptoolservice.app.service.ApptoolTradeChannelService;
 import cn.com.open.apptoolservice.app.service.MobileVerifyService;
 import cn.com.open.apptoolservice.app.vo.MobileVerifyVo;
@@ -37,7 +17,17 @@ import cn.com.open.apptoolservice.app.zxpt.zx.DateUtil;
 import cn.com.open.apptoolservice.app.zxpt.zx.MobileVerifyRequest;
 import cn.com.open.apptoolservice.app.zxpt.zx.Request;
 import cn.com.open.apptoolservice.app.zxpt.zx.RequestHead;
-import cn.com.open.apptoolservice.app.service.ApptoolRecordInfoService;
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
+import org.json.XML;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.net.URLDecoder;
+import java.util.*;
 
 public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
 
@@ -49,6 +39,8 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
     private ApptoolTradeChannelService apptoolTradeChannelService;
     @Autowired
     private ApptoolRecordInfoService apptoolRecordInfoService;
+    @Autowired
+	private ThirdPartyCallAssistant thirdPartyCallAssistant;
 
     @Override
     public Result attribution(MobileVerifyVo mobileVerifyVo) throws Exception {
@@ -79,12 +71,18 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
 		params.put("tranCode", others.get(ZxptEntityEnum.TRANCODE.getCode()));
 		params.put("sender", others.get(ZxptEntityEnum.SENDER.getCode()));//sender：填写由业务分发的商户号
 		String url = apptoolTradeChannel.getRequestUrl();
+
+		long startTime = System.currentTimeMillis(); //请求开始时间
 		String responsexml = HttpClientUtil.httpPost(url, params);
 		log.info("请求结果："+responsexml);
 		byte[] outdata;
 		outdata = RSACoderUtil.decrypt(responsexml, others.get(ZxptEntityEnum.PRIVATEKEY.getCode()), charset);
 		String decode = new String(outdata, charset);
 		String decodexml = URLDecoder.decode(decode, charset);
+
+		//记录日志
+		thirdPartyCallAssistant.zxMobileVerifyLog(startTime, decodexml, mobileVerifyServiceProvider);
+
         if (StringUtils.isNotEmpty(decodexml)) {
         	JSONObject xmlJSONObj = XML.toJSONObject(decodexml);
     		com.alibaba.fastjson.JSONObject jsonObject = null;

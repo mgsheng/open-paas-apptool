@@ -1,4 +1,4 @@
-package cn.com.open.apptoolservice.app.record;
+package cn.com.open.apptoolservice.app.log;
 
 import cn.com.open.apptoolservice.app.common.Result;
 import cn.com.open.apptoolservice.app.service.ApptoolRecordInfoService;
@@ -18,12 +18,12 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class RecordRemoteCallAspect {
 
-    Logger log = LoggerFactory.getLogger(RecordRemoteCallAspect.class);
+    private static final Logger log = LoggerFactory.getLogger(RecordRemoteCallAspect.class);
 
     @Autowired
     private ApptoolRecordInfoService apptoolRecordInfoService;
 
-    @Pointcut("@annotation(cn.com.open.apptoolservice.app.record.RecordRemoteCall)")
+    @Pointcut("@annotation(cn.com.open.apptoolservice.app.log.annotation.SaveAppToolRecordInfo)")
     public void controllerAspect() {
     }
 
@@ -33,7 +33,6 @@ public class RecordRemoteCallAspect {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
             Result result = (Result) returnValue;
             apptoolRecordInfoService.saveImageRecordInfo(request, result);
-            log.info("hshshsh");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
