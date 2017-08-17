@@ -27,16 +27,4 @@ public class ParamUtil {
         return null == str || str.isEmpty() || "".equals(str.trim());
     }
 
-    /**
-     * 校验文件类型
-     *
-     * @param fileName 文件名
-     * @param imageTypes 文件类型字符串
-     * @return 是否通过校验
-     */
-    public static boolean checkFileType(String fileName, String imageTypes) {
-        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-        return imageTypes.contains(suffix.trim().toLowerCase());
-    }
-
 }
