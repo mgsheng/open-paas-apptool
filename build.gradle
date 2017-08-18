@@ -11,6 +11,10 @@ buildscript {
 }
 
 apply plugin: 'java'
+test {
+    testLogging.showStandardStreams = true
+}
+
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
@@ -67,7 +71,7 @@ dependencies {
     compile fileTree(dir:'libs',include:['*.jar'])
 
     testCompile("junit:junit:4.12")
-    testCompile("org.springframework:spring-test")
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 dependencyManagement {
