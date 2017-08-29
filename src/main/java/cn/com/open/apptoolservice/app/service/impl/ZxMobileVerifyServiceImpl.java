@@ -105,6 +105,7 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
             		String orderId=mobileverifyjson.getString("orderId");
             		String orderNo=mobileverifyjson.getString("orderNo");
             		int returnResult=0;
+            		String verifycationMsg="";
             		 Map<String, Object> map = new HashMap<>();
             		 log.info("请求结果zxpt："+orderId+":"+orderNo);
             		 ApptoolRecordInfo apptoolRecordInfo= apptoolRecordInfoService.findApptoolRecordInfoById(orderId);
@@ -113,16 +114,20 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
             			 apptoolRecordInfo.setStatus(1);
             			 apptoolRecordInfo.setThirdOrderNo(orderNo);
             			 returnResult=1;
+            			 verifycationMsg="手机号实名制信息匹配一致";
             		  }else if(!nullAndEmpty(verificationResult)&&verificationResult.equals(MobileResultEnum.RESULTERROR.getMessage())&&apptoolRecordInfo!=null){
             			 apptoolRecordInfo.setStatus(2);
              			 apptoolRecordInfo.setThirdOrderNo(orderNo);
              			 returnResult=-1;
+             			 verifycationMsg="手机号实名制信息匹配不一致";
             		  }else{
             			  apptoolRecordInfo.setThirdOrderNo(orderNo);
+            			  verifycationMsg="手机号实名制信息验证失败";
             		  }
             		  boolean f=apptoolRecordInfoService.updateApptoolRecordInfo(apptoolRecordInfo);
             		  if(f){
             			  map.put("verificationResult", returnResult);
+            			  map.put("verifycationMsg", verifycationMsg);
             			  log.info("更新状态成功");
                 		  return new Result(Result.SUCCESS, ExceptionEnum.MobileVerifySuccess.getMessage(), null, map);
             		  }else{
