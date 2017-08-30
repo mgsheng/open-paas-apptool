@@ -1,11 +1,5 @@
 spring:
   cloud:
-    config:
-      discovery:
-         enabled: true
-         serviceId: consul-config
-      label: master
-      profile: ${CONFIG_ENV}
     consul:
       host: ${CONSUL_HOST}
       port: ${CONSUL_PORT}
