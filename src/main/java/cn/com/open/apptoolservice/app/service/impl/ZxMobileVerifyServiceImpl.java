@@ -92,7 +92,9 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
     		com.alibaba.fastjson.JSONObject zxptjson=JSON.parseObject(zxpt);
     		String body=zxptjson.getString("body");
     		if(nullEmptyBlankJudge(body)){
-    			return new Result(Result.ERROR, ExceptionEnum.ThirdBodyError.getMessage(),  ExceptionEnum.ThirdBodyError.getCode(), null);
+    			String returnHead=zxptjson.getString("head");
+    			String message=getHeadMsg(returnHead);
+    			return new Result(Result.ERROR, message,  ExceptionEnum.ThirdBodyError.getCode(), null);
     		}else{
     			log.info("请求结果zxpt："+body);
     			com.alibaba.fastjson.JSONObject bodyjson=JSON.parseObject(body);
@@ -121,8 +123,18 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
              			 returnResult=-1;
              			 verifycationMsg="手机号实名制信息匹配不一致";
             		  }else{
+            			  String errorMsg=mobileverifyjson.getString("errorMessage");
+            			  if(!nullAndEmpty(errorMsg)){
+            				  String errorMsgs[]=errorMsg.toString().split(":");
+            				  if(errorMsgs!=null&&errorMsgs.length>=2){
+            					  errorMsg=errorMsgs[1];  
+            				  }
+            				  
+            			  }else{
+            				  errorMsg="系统错误";
+            			  }
             			  apptoolRecordInfo.setThirdOrderNo(orderNo);
-            			  verifycationMsg="手机号实名制信息验证失败";
+            			  return new Result(Result.ERROR, errorMsg,  ExceptionEnum.ThirdBodyError.getCode(), null);
             		  }
             		  boolean f=apptoolRecordInfoService.updateApptoolRecordInfo(apptoolRecordInfo);
             		  if(f){
@@ -156,7 +168,32 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
 		return rHead;
 		
 	}
-	
+	/**
+	 * 获取head消息体
+	 * @return
+	 */
+	public String getHeadMsg(String head){
+		String message="";
+		if(!nullAndEmpty(head)){
+			com.alibaba.fastjson.JSONObject headjson=JSON.parseObject(head);
+			message=headjson.getString("message");
+			String messageCode=headjson.getString("messageCode");
+			if(!nullAndEmpty(messageCode)&&messageCode.equals("EFL00023")){
+				message="手机号不正确";
+			}if(!nullAndEmpty(messageCode)&&messageCode.equals("EFL00020")){
+				message="身份证长度不正确";
+			}if(!nullAndEmpty(messageCode)&&messageCode.equals("EFF00020")){
+				message="身份证格式不正确";
+			}if(!nullAndEmpty(messageCode)&&messageCode.equals("EFF00023")){
+				message="手机号不正确";
+			}
+		}else{
+			message="系统错误";
+		}
+		
+		return message;
+		
+	}
 	public static MobileVerifyRequest init1201Request(MobileVerifyVo mobileVerifyVo,Map<String, String> others) {
 		
 		MobileVerifyRequest bRequest=new MobileVerifyRequest();
