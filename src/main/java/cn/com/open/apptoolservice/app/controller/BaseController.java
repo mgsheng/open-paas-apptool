@@ -3,15 +3,17 @@ package cn.com.open.apptoolservice.app.controller;
 import cn.com.open.apptoolservice.app.common.ExceptionEnum;
 import cn.com.open.apptoolservice.app.common.Result;
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class BaseController {
-	
+
+    private static final Logger log = LoggerFactory.getLogger(BaseController.class);
+
 	protected static boolean nullAndEmpty(String str){
         return null==str||str.isEmpty()||"".equals(str.trim());
     }
@@ -92,9 +94,9 @@ public class BaseController {
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(resultJson);
-            System.out.println(resultJson);
+            log.info(resultJson);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 

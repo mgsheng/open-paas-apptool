@@ -6,7 +6,6 @@ import cn.com.open.apptoolservice.app.common.ServiceProviderEnum;
 import cn.com.open.apptoolservice.app.log.support.AliyunResponseBean;
 import cn.com.open.apptoolservice.app.log.support.ThirdPartyCallLog;
 import cn.com.open.apptoolservice.app.utils.DateUtil;
-import cn.com.open.apptoolservice.app.zxpt.http.HttpClientUtil;
 import com.aliyun.api.gateway.demo.util.HttpUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -25,7 +24,7 @@ import java.util.Map;
 @Component
 public class ThirdPartyCallAssistant {
 
-    private final static Logger log = LoggerFactory.getLogger(ThirdPartyCallAssistant.class);
+    private static final Logger log = LoggerFactory.getLogger(ThirdPartyCallAssistant.class);
 
     @Autowired
     private ApptoolServiceLogSender apptoolServiceLogSender;
@@ -43,7 +42,7 @@ public class ThirdPartyCallAssistant {
             responseHeaders.put("X-Ca-Error-Message", Arrays.toString(response.getHeaders("X-Ca-Error-Message")));
             aliyunResponseBean.setHeards(responseHeaders);
             String text = EntityUtils.toString(response.getEntity());
-            log.info(String.format("aliyun response text { %s } ", text));
+            log.info("aliyun response text {} ", text);
             aliyunResponseBean.setJson(text);
             return aliyunResponseBean;
         } finally {
@@ -52,7 +51,7 @@ public class ThirdPartyCallAssistant {
                 ThirdPartyCallLog thirdPartyCallLog = new ThirdPartyCallLog();
                 thirdPartyCallLog.setChannelValue(channelValue);
                 thirdPartyCallLog.setChannelName(ServiceProviderEnum.getNameByValue(channelValue));
-                thirdPartyCallLog.setExecutionTime(endTime - startTime);
+                thirdPartyCallLog.setExecutionTime((double)(endTime - startTime));
                 thirdPartyCallLog.setLogType(LogTypeEnum.ThIRDPARTY.getCode());
                 thirdPartyCallLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
                 if (aliyunResponseBean != null) {
@@ -71,7 +70,7 @@ public class ThirdPartyCallAssistant {
                 ThirdPartyCallLog thirdPartyCallLog = new ThirdPartyCallLog();
                 thirdPartyCallLog.setChannelValue(channelValue);
                 thirdPartyCallLog.setChannelName(ServiceProviderEnum.getNameByValue(channelValue));
-                thirdPartyCallLog.setExecutionTime(endTime - startTime);
+                thirdPartyCallLog.setExecutionTime((double)(endTime - startTime));
                 thirdPartyCallLog.setLogType(LogTypeEnum.ThIRDPARTY.getCode());
                 thirdPartyCallLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
                 thirdPartyCallLog.setResponseText(decodeXml);

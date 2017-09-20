@@ -7,6 +7,8 @@ import cn.com.open.apptoolservice.app.service.ApptoolRecordInfoService;
 import cn.com.open.apptoolservice.app.service.MobileVerifyService;
 import cn.com.open.apptoolservice.app.vo.MobileVerifyVo;
 import cn.com.open.apptoolservice.app.zxpt.zx.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +26,8 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("/mobile")
 public class MobileVerifyController extends BaseController {
+
+	private static final Logger log = LoggerFactory.getLogger(PhoneController.class);
 
     @Autowired
     private ApptoolRecordInfoService apptoolRecordInfoService;
@@ -60,7 +64,7 @@ public class MobileVerifyController extends BaseController {
    	   	    	 responseErrorJason(response, ExceptionEnum.AddEntityError);
    	   	    	}
    	        } catch (Exception e) {
-   	            e.printStackTrace();
+   	    		log.error(e.getMessage());
    	            responseErrorJason(response, ExceptionEnum.SysException);
    	        }
    	    

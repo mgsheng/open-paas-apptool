@@ -23,8 +23,9 @@ sonarqube {
 
 sonarqube {
     properties {
-        property "sonar.sources", "./src/main"
-        property "sonar.tests", "./src/test"
+        property "sonar.exclusions", "src/main/java/cn/com/open/apptoolservice/app/zxpt/**/*"
+        property "sonar.sources", "./src/main/java"
+        property "sonar.tests", "./src/test/java"
 
         property "sonar.projectName", "应用工具服务:apptool-service"
         property "sonar.projectKey", "apptool-service:project"

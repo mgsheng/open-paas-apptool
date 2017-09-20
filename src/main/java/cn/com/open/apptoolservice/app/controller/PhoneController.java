@@ -4,6 +4,8 @@ import cn.com.open.apptoolservice.app.common.ExceptionEnum;
 import cn.com.open.apptoolservice.app.common.Result;
 import cn.com.open.apptoolservice.app.service.PhoneService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/phone")
 public class PhoneController extends BaseController {
+
+    private static final Logger log = LoggerFactory.getLogger(PhoneController.class);
 
     @Autowired
     private PhoneService phoneService;
@@ -40,7 +44,7 @@ public class PhoneController extends BaseController {
             Result result = phoneService.attribution(number);
             responseJason(response, result);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             responseErrorJason(response, ExceptionEnum.SysException);
         }
     }

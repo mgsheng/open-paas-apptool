@@ -38,7 +38,7 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
         apptoolRecordInfo.setId(DateUtil.getCurrentDateTime());
         apptoolRecordInfo.setAppKey(request.getHeader(FormEnum.APPKEY.getCode()));
         apptoolRecordInfo.setCreateTime(new Date());
-        apptoolRecordInfo.setServiceName(request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1));
+        apptoolRecordInfo.setServiceName(request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1));
         apptoolRecordInfo.setMerchantId(Integer.parseInt(request.getParameter("merchantId")));
         apptoolRecordInfo.setSourceUsername(request.getParameter("sourceUserName"));
         apptoolRecordInfo.setSourceUid(request.getParameter("sourceUid"));
@@ -64,7 +64,7 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
 		   	  apptoolRecordInfo.setSourceUid(mobileVerifyVo.getSourceUid());
 		   	  apptoolRecordInfo.setSourceUsername(mobileVerifyVo.getSourceUserName());
 		   	  apptoolRecordInfo.setMerchantId(Integer.parseInt(mobileVerifyVo.getMerchantId()));
-		   	  apptoolRecordInfo.setServiceName(request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1));
+		   	  apptoolRecordInfo.setServiceName(request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1));
 			  apptoolRecordInfoMapper.insert(apptoolRecordInfo);
 			  return true;
 		} catch (Exception e) {

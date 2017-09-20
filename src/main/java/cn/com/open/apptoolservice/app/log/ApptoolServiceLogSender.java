@@ -16,8 +16,8 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class ApptoolServiceLogSender {
 
-    private final static Logger log= LoggerFactory.getLogger(ApptoolServiceLogSender.class);
-    private final static String LOG_DB_NAME = "apptoolservocelog";
+    private static final Logger log= LoggerFactory.getLogger(ApptoolServiceLogSender.class);
+    private static final String LOG_DB_NAME = "apptoolservocelog";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -28,7 +28,7 @@ public class ApptoolServiceLogSender {
      * 记录接口调用日志
      * @param appToolServiceLog log model
      */
-    public void sendServiceLog(ApptoolServiceLog appToolServiceLog) {
+    void sendServiceLog(ApptoolServiceLog appToolServiceLog) {
         MultiValueMap<String, Object> logMap = new LinkedMultiValueMap<>();
         logMap.add("tag", LOG_DB_NAME);
         logMap.add("logData", JSONObject.toJSONString(appToolServiceLog));
@@ -38,7 +38,7 @@ public class ApptoolServiceLogSender {
     /**
      * 记录图片服务调用第三方接口的操作日志
      */
-    public void sendThirdPartyCallLog(ThirdPartyCallLog thirdPartyCallLog) {
+    void sendThirdPartyCallLog(ThirdPartyCallLog thirdPartyCallLog) {
         MultiValueMap<String, Object> logMap = new LinkedMultiValueMap<>();
         logMap.add("tag", LOG_DB_NAME);
         logMap.add("logData", JSONObject.toJSONString(thirdPartyCallLog));

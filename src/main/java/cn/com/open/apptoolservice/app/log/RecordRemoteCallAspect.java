@@ -25,6 +25,7 @@ public class RecordRemoteCallAspect {
 
     @Pointcut("@annotation(cn.com.open.apptoolservice.app.log.annotation.SaveAppToolRecordInfo)")
     public void controllerAspect() {
+        //do nothing
     }
 
     @AfterReturning(pointcut = "controllerAspect()", returning = "returnValue")

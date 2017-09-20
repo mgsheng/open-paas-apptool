@@ -43,7 +43,7 @@ public class Application {
             @Override
             public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
                 return new RequestMappingHandlerMapping() {
-                    private final static String EXCLUDE_PATH = "/dnotdelet/mom.html";
+                    private static final String EXCLUDE_PATH = "/dnotdelet/mom.html";
                     @Override
                     protected void registerHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
                         Set<String> patterns = mapping.getPatternsCondition().getPatterns();

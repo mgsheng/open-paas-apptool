@@ -45,27 +45,26 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
     @Override
     public Result attribution(MobileVerifyVo mobileVerifyVo) throws Exception {
         String channelName = ServiceProviderEnum.getNameByValue(mobileVerifyServiceProvider);
-        log.info("请求开始："+channelName);
+        log.info("请求开始：{} ", channelName);
         ApptoolTradeChannel apptoolTradeChannel = apptoolTradeChannelService.findByChannelName(channelName);
 		String paket="";
 		String sign="";
-		Request<MobileVerifyRequest> request=new Request<MobileVerifyRequest>();
+		Request<MobileVerifyRequest> request=new Request<>();
 		
 		String other= apptoolTradeChannel.getOther();
-		Map<String, String> others = new HashMap<String, String>();
-		others=getPartner(other);
-		String charset=others.get(ZxptEntityEnum.CHARSET.getCode());
-		log.info("获取参数成功："+charset);
+		Map<String, String> others = getPartner(other);
+		String charset = others.get(ZxptEntityEnum.CHARSET.getCode());
+		log.info("获取参数成功：{} ", charset);
 		RequestHead head=initHead(others);
 		request.setHead(head);
-		List<MobileVerifyRequest> list=new ArrayList<MobileVerifyRequest>();
+		List<MobileVerifyRequest> list=new ArrayList<>();
 		MobileVerifyRequest bRequest=init1201Request(mobileVerifyVo,others);
 		list.add(bRequest);
 		request.setBody(list);
 		String requestXml=XOUtil.objectToXml(request,  Request.class, RequestHead.class, MobileVerifyRequest.class);
 		paket= RSACoderUtil.encrypt(requestXml.getBytes(charset), charset, others.get(ZxptEntityEnum.PUBLICKEY.getCode()));
 		sign = MD5.sign(paket, others.get(ZxptEntityEnum.MD5KEY.getCode()), charset);
-		Map<String, String> params=new HashMap<String,String>();
+		Map<String, String> params=new HashMap<>();
 		params.put("packet", paket);
 		params.put("checkValue", sign);
 		params.put("tranCode", others.get(ZxptEntityEnum.TRANCODE.getCode()));
@@ -74,7 +73,7 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
 
 		long startTime = System.currentTimeMillis(); //请求开始时间
 		String responsexml = HttpClientUtil.httpPost(url, params);
-		log.info("请求结果："+responsexml);
+		log.info("请求结果：{}", responsexml);
 		byte[] outdata;
 		outdata = RSACoderUtil.decrypt(responsexml, others.get(ZxptEntityEnum.PRIVATEKEY.getCode()), charset);
 		String decode = new String(outdata, charset);
@@ -88,7 +87,7 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
     		com.alibaba.fastjson.JSONObject jsonObject = null;
     		jsonObject = JSON.parseObject(xmlJSONObj.toString());
     		String zxpt=jsonObject.getString("zxpt");
-    		log.info("请求结果zxpt："+zxpt);
+    		log.info("请求结果zxpt：{} ", zxpt);
     		com.alibaba.fastjson.JSONObject zxptjson=JSON.parseObject(zxpt);
     		String body=zxptjson.getString("body");
     		if(nullEmptyBlankJudge(body)){
@@ -96,7 +95,7 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
     			String message=getHeadMsg(returnHead);
     			return new Result(Result.ERROR, message,  ExceptionEnum.ThirdBodyError.getCode(), null);
     		}else{
-    			log.info("请求结果zxpt："+body);
+    			log.info("请求结果zxpt：{}", body);
     			com.alibaba.fastjson.JSONObject bodyjson=JSON.parseObject(body);
         		String mobileverifyresponse=bodyjson.getString("mobileverifyresponse");
         		if(nullEmptyBlankJudge(mobileverifyresponse)){
@@ -109,7 +108,7 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
             		int returnResult=0;
             		String verifycationMsg="";
             		 Map<String, Object> map = new HashMap<>();
-            		 log.info("请求结果zxpt："+orderId+":"+orderNo);
+            		 log.info("请求结果zxpt：{} : {}", orderId, orderNo);
             		 ApptoolRecordInfo apptoolRecordInfo= apptoolRecordInfoService.findApptoolRecordInfoById(orderId);
             		 
             		  if(!nullAndEmpty(verificationResult)&&verificationResult.equals(MobileResultEnum.RESULTSUCCESS.getMessage())&&apptoolRecordInfo!=null){
@@ -120,20 +119,19 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
             		  }else if(!nullAndEmpty(verificationResult)&&verificationResult.equals(MobileResultEnum.RESULTERROR.getMessage())&&apptoolRecordInfo!=null){
             			 apptoolRecordInfo.setStatus(2);
              			 apptoolRecordInfo.setThirdOrderNo(orderNo);
-             			 returnResult=-1;
+             			 returnResult = -1;
              			 verifycationMsg="手机号实名制信息匹配不一致";
             		  }else{
             			  String errorMsg=mobileverifyjson.getString("errorMessage");
             			  if(!nullAndEmpty(errorMsg)){
-            				  String errorMsgs[]=errorMsg.toString().split(":");
-            				  if(errorMsgs!=null&&errorMsgs.length>=2){
+            				  String[] errorMsgs=errorMsg.split(":");
+            				  if(errorMsgs.length>=2){
             					  errorMsg=errorMsgs[1];  
             				  }
             				  
             			  }else{
             				  errorMsg="系统错误";
             			  }
-            			  apptoolRecordInfo.setThirdOrderNo(orderNo);
             			  return new Result(Result.ERROR, errorMsg,  ExceptionEnum.ThirdBodyError.getCode(), null);
             		  }
             		  boolean f=apptoolRecordInfoService.updateApptoolRecordInfo(apptoolRecordInfo);
@@ -207,24 +205,26 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
 		return bRequest;
 		
 	}
-	public  Map<String, String> getPartner(String other){
-		if(other==null&&"".equals(other)){
-			return null;
+	private Map<String, String> getPartner(String other){
+		if(StringUtils.isEmpty(other)){
+			return new HashMap<>();
 		}else{
-		String others []=other.split("#");
+		String[] others =other.split("#");
 		Map<String, String> sParaTemp = new HashMap<String, String>();
-		for (int i=0;i<others.length;i++){
-			String values []=others[i].split(":");
-			   sParaTemp.put(values[0], values[1]);  
+		for (String other1 : others) {
+			String[] values = other1.split(":");
+			sParaTemp.put(values[0], values[1]);
 		}
 		
 		return sParaTemp;
 		}
 	}
-	protected static boolean nullAndEmpty(String str){
+
+	private boolean nullAndEmpty(String str){
         return null==str||str.isEmpty()||"".equals(str.trim());
     }
-	 protected boolean nullEmptyBlankJudge(String str){
+
+	private boolean nullEmptyBlankJudge(String str){
         return null==str||str.isEmpty()||"".equals(str.trim());
     }
 }

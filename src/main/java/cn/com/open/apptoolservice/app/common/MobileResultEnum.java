@@ -41,15 +41,4 @@ public enum MobileResultEnum {
         return name();
     }
 
-    public String getDisplay() {
-        return message;
-    }
-
-    public String getMemo() {
-        return message;
-    }
-
-    public Enum<?> getDefault() {
-        return null;
-    }
 }

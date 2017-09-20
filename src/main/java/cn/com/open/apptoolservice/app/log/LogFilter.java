@@ -31,6 +31,7 @@ public class LogFilter implements Filter {
 
     @Override
     public void init(FilterConfig config) throws ServletException {
+        //do nothing
     }
 
     @Override
@@ -58,7 +59,7 @@ public class LogFilter implements Filter {
                 appToolServiceLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
                 appToolServiceLog.setHttpMethod(req.getMethod());
                 appToolServiceLog.setRequestParam(requestParamsToJSON(req));
-                appToolServiceLog.setExecutionTime(endTime - startTime);
+                appToolServiceLog.setExecutionTime((double)(endTime - startTime));
                 appToolServiceLog.setRequestPath(req.getRequestURI().replaceFirst(apptoolBaseRequestUrl, ""));
                 appToolServiceLog.setHttpResponseStatus(String.valueOf(responseCopier.getStatus()));
                 appToolServiceLog.setLogType(LogTypeEnum.SERVICE.getCode());
@@ -83,6 +84,7 @@ public class LogFilter implements Filter {
 
     @Override
     public void destroy() {
+        //do nothing
     }
 
     /**
@@ -126,7 +128,7 @@ public class LogFilter implements Filter {
                 try {
                     inet = InetAddress.getLocalHost();
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    System.err.println(e.getMessage());
                 }
                 if(null != inet){
                     ip = inet.getHostAddress();
@@ -135,8 +137,8 @@ public class LogFilter implements Filter {
         }
         // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
         if (ip != null && ip.length() > 15) {
-            if (ip.indexOf(",") > 0) {
-                ip = ip.substring(0, ip.indexOf(","));
+            if (ip.contains(",")) {
+                ip = ip.substring(0, ip.indexOf(','));
             }
         }
         return ip;
