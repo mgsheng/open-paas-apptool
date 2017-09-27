@@ -7,18 +7,18 @@ spring:
       label: master
       profile: ${CONFIG_ENV}
     consul:
-      host: ${CONSUL_HOST}
-      port: ${CONSUL_PORT}
+      host: 10.100.136.33
+      port: 8500
       discovery:
         healthCheckPath: /info
         healthCheckInterval: 15s
         instance-id: apptool-service
-        hostname: ${HOST}
-        port: ${PORT}
+        hostname: localhost
+        port: 8080
   application:
      name: apptool-service
 server:
-  port: 80
+  port: 8080
 ribbon:
    ServerListRefreshInterval: 1000
 endpoints:
