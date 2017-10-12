@@ -8,7 +8,8 @@ package cn.com.open.apptoolservice.app.common;
 public enum ServiceProviderEnum {
 
     AliyunPhoneAttribution("aliyun-phone-attribution", "10000"),
-    TztMobileVerifyAttribution("tzt-mobile-verify-attribution", "10001")
+    TztMobileVerifyAttribution("tzt-mobile-verify-attribution", "10001"),
+    AliyunMobileVerify("aliyun-mobile-verify", "10002")
     ;
     String name;
     String value;

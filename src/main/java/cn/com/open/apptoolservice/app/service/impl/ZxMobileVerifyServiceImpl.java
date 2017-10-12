@@ -114,11 +114,13 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
             		  if(!nullAndEmpty(verificationResult)&&verificationResult.equals(MobileResultEnum.RESULTSUCCESS.getMessage())&&apptoolRecordInfo!=null){
             			 apptoolRecordInfo.setStatus(1);
             			 apptoolRecordInfo.setThirdOrderNo(orderNo);
+            			 apptoolRecordInfo.setVerifyResult(1);
             			 returnResult=1;
             			 verifycationMsg="手机号实名制信息匹配一致";
             		  }else if(!nullAndEmpty(verificationResult)&&verificationResult.equals(MobileResultEnum.RESULTERROR.getMessage())&&apptoolRecordInfo!=null){
-            			 apptoolRecordInfo.setStatus(2);
+            			 apptoolRecordInfo.setStatus(1);
              			 apptoolRecordInfo.setThirdOrderNo(orderNo);
+             			 apptoolRecordInfo.setVerifyResult(-1);
              			 returnResult = -1;
              			 verifycationMsg="手机号实名制信息匹配不一致";
             		  }else{

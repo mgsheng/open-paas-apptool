@@ -5,6 +5,7 @@ import cn.com.open.apptoolservice.app.interceptor.VerifySignatureInterceptor;
 import cn.com.open.apptoolservice.app.log.LogFilter;
 import cn.com.open.apptoolservice.app.service.PhoneService;
 import cn.com.open.apptoolservice.app.service.impl.AliyunPhoneServiceImpl;
+import cn.com.open.apptoolservice.app.service.impl.AliyunVerifyServiceImpl;
 import cn.com.open.apptoolservice.app.service.impl.ZxMobileVerifyServiceImpl;
 
 import org.mybatis.spring.annotation.MapperScan;
@@ -72,6 +73,11 @@ public class SystemConfig extends WebMvcConfigurerAdapter {
     public ZxMobileVerifyServiceImpl getMobileVerifyService() {
         if (mobileVerifyServiceProvider.equals(ServiceProviderEnum.TztMobileVerifyAttribution.getValue())) return new ZxMobileVerifyServiceImpl();
         return null;
+    }
+
+    @Bean
+    public AliyunVerifyServiceImpl getAliyunVerifyServiceImpl() {
+        return new AliyunVerifyServiceImpl();
     }
 
 }

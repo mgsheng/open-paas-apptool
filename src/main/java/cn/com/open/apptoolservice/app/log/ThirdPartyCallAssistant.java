@@ -81,4 +81,38 @@ public class ThirdPartyCallAssistant {
         }
 
     }
+
+    public AliyunResponseBean verify(String url, Map<String, String> headers, String httpMethod, Map<String, String> querys) throws Exception {
+        AliyunResponseBean aliyunResponseBean = null;
+        long startTime = System.currentTimeMillis(); //请求开始时间
+        try {
+            HttpResponse response = HttpUtils.doGet(url, null, httpMethod, headers, querys);
+            aliyunResponseBean = new AliyunResponseBean();
+            Map<String, String> responseHeaders = new HashMap<>();
+            responseHeaders.put("X-Ca-Request-Id", Arrays.toString(response.getHeaders("X-Ca-Request-Id")));
+            responseHeaders.put("X-Ca-Error-Message", Arrays.toString(response.getHeaders("X-Ca-Error-Message")));
+            aliyunResponseBean.setHeards(responseHeaders);
+            String text = EntityUtils.toString(response.getEntity());
+            log.info("aliyun response text {} ", text);
+            aliyunResponseBean.setJson(text);
+            return aliyunResponseBean;
+        } finally {
+            if ("on".equals(apptoolThirdpartyLogOnOff)) {
+                long endTime = System.currentTimeMillis();
+                ThirdPartyCallLog thirdPartyCallLog = new ThirdPartyCallLog();
+                thirdPartyCallLog.setChannelValue(ServiceProviderEnum.AliyunMobileVerify.getName());
+                thirdPartyCallLog.setChannelName(ServiceProviderEnum.AliyunMobileVerify.getValue());
+                thirdPartyCallLog.setExecutionTime((double)(endTime - startTime));
+                thirdPartyCallLog.setLogType(LogTypeEnum.ThIRDPARTY.getCode());
+                thirdPartyCallLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                if (aliyunResponseBean != null) {
+                    thirdPartyCallLog.setResponseText(aliyunResponseBean.getJson());
+                    thirdPartyCallLog.setResponseHeaderParam(JSONObject.valueToString(aliyunResponseBean.getHeards()));
+                }
+                apptoolServiceLogSender.sendThirdPartyCallLog(thirdPartyCallLog);
+            }
+        }
+    }
+
+
 }

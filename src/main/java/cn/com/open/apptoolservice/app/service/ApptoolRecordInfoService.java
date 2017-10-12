@@ -14,4 +14,8 @@ public interface ApptoolRecordInfoService {
 	boolean saveApptoolRecordInfo(HttpServletRequest request,MobileVerifyVo mobileVerifyVo);
 	ApptoolRecordInfo findApptoolRecordInfoById(String id);
 	boolean  updateApptoolRecordInfo(ApptoolRecordInfo apptoolRecordInfo);
+
+	ApptoolRecordInfo findByCondition(MobileVerifyVo mobileVerifyVo, Integer channelValue);
+
+	boolean updateByCondition(MobileVerifyVo mobileVerifyVo, Integer verifyResult);
 }

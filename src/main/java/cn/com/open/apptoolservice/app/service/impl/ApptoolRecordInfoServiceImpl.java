@@ -1,8 +1,6 @@
 package cn.com.open.apptoolservice.app.service.impl;
 
-import cn.com.open.apptoolservice.app.common.FormEnum;
-import cn.com.open.apptoolservice.app.common.ImgRecordInfoStatus;
-import cn.com.open.apptoolservice.app.common.Result;
+import cn.com.open.apptoolservice.app.common.*;
 import cn.com.open.apptoolservice.app.entity.ApptoolRecordInfo;
 import cn.com.open.apptoolservice.app.mapper.ApptoolRecordInfoMapper;
 import cn.com.open.apptoolservice.app.service.ApptoolRecordInfoService;
@@ -11,9 +9,11 @@ import cn.com.open.apptoolservice.app.zxpt.zx.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -84,6 +84,40 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
 			return true;
 		} catch (Exception e) {
 			return false;
+		}
+	}
+
+	@Override
+	public ApptoolRecordInfo findByCondition(MobileVerifyVo mobileVerifyVo, Integer channelValue) {
+		ApptoolRecordInfo example = new ApptoolRecordInfo();
+		example.setIdCard(mobileVerifyVo.getIdCard());
+		example.setRealName(mobileVerifyVo.getRealName());
+		example.setPhone(mobileVerifyVo.getNumber());
+		example.setChannelValue(channelValue);
+		List<ApptoolRecordInfo> apptoolRecordInfoList = apptoolRecordInfoMapper.findBySelective(example);
+    	return CollectionUtils.isEmpty(apptoolRecordInfoList) ? null : apptoolRecordInfoList.get(0);
+	}
+
+	@Override
+	public boolean updateByCondition(MobileVerifyVo mobileVerifyVo, Integer verifyResult) {
+		ApptoolRecordInfo example = new ApptoolRecordInfo();
+		example.setIdCard(mobileVerifyVo.getIdCard());
+		example.setRealName(mobileVerifyVo.getRealName());
+		example.setPhone(mobileVerifyVo.getNumber());
+		example.setChannelValue(Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
+		List<ApptoolRecordInfo> apptoolRecordInfoList = apptoolRecordInfoMapper.findBySelective(example);
+
+		if (CollectionUtils.isEmpty(apptoolRecordInfoList)) {
+			return false;
+		} else {
+			ApptoolRecordInfo apptoolRecordInfo = apptoolRecordInfoList.get(0);
+			apptoolRecordInfo.setVerifyResult(verifyResult);
+			try {
+				apptoolRecordInfoMapper.updateBySelective(apptoolRecordInfo);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
 		}
 	}
 }
