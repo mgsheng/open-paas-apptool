@@ -32,26 +32,6 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
         }
     }
 
-    @Override
-    public void saveImageRecordInfo(HttpServletRequest request, Result result) {
-        ApptoolRecordInfo apptoolRecordInfo = new ApptoolRecordInfo();
-        apptoolRecordInfo.setId(DateUtil.getCurrentDateTime());
-        apptoolRecordInfo.setAppKey(request.getHeader(FormEnum.APPKEY.getCode()));
-        apptoolRecordInfo.setCreateTime(new Date());
-        apptoolRecordInfo.setServiceName(request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1));
-        apptoolRecordInfo.setMerchantId(Integer.parseInt(request.getParameter("merchantId")));
-        apptoolRecordInfo.setSourceUsername(request.getParameter("sourceUserName"));
-        apptoolRecordInfo.setSourceUid(request.getParameter("sourceUid"));
-        apptoolRecordInfo.setPhone(request.getParameter("number"));
-        if (result == null)
-            apptoolRecordInfo.setStatus(ImgRecordInfoStatus.exception.getCode()); //请求异常
-        else if (Result.SUCCESS.equals(result.getStatus()))
-            apptoolRecordInfo.setStatus(ImgRecordInfoStatus.success.getCode()); //请求成功
-        else
-            apptoolRecordInfo.setStatus(ImgRecordInfoStatus.fail.getCode()); //请求失败
-        this.insert(apptoolRecordInfo);
-    }
-
 	@Override
 	public boolean saveApptoolRecordInfo(HttpServletRequest request,MobileVerifyVo mobileVerifyVo) {
 		try {
@@ -119,5 +99,26 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
 				return false;
 			}
 		}
+	}
+
+	@Override
+	public void saveRecordInfo(HttpServletRequest request, Result result, String channelValue) {
+		ApptoolRecordInfo apptoolRecordInfo = new ApptoolRecordInfo();
+		apptoolRecordInfo.setId(DateUtil.getCurrentDateTime());
+		apptoolRecordInfo.setAppKey(request.getHeader(FormEnum.APPKEY.getCode()));
+		apptoolRecordInfo.setCreateTime(new Date());
+		apptoolRecordInfo.setServiceName(request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1));
+		apptoolRecordInfo.setMerchantId(Integer.parseInt(request.getParameter("merchantId")));
+		apptoolRecordInfo.setSourceUsername(request.getParameter("sourceUserName"));
+		apptoolRecordInfo.setSourceUid(request.getParameter("sourceUid"));
+		apptoolRecordInfo.setPhone(request.getParameter("number"));
+		apptoolRecordInfo.setChannelValue(Integer.valueOf(channelValue));
+		if (result == null)
+			apptoolRecordInfo.setStatus(ImgRecordInfoStatus.exception.getCode()); //请求异常
+		else if (Result.SUCCESS.equals(result.getStatus()))
+			apptoolRecordInfo.setStatus(ImgRecordInfoStatus.success.getCode()); //请求成功
+		else
+			apptoolRecordInfo.setStatus(ImgRecordInfoStatus.fail.getCode()); //请求失败
+		this.insert(apptoolRecordInfo);
 	}
 }

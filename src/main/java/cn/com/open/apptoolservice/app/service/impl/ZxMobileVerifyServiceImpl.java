@@ -110,6 +110,7 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
             		 Map<String, Object> map = new HashMap<>();
             		 log.info("请求结果zxpt：{} : {}", orderId, orderNo);
             		 ApptoolRecordInfo apptoolRecordInfo= apptoolRecordInfoService.findApptoolRecordInfoById(orderId);
+            		 apptoolRecordInfo.setChannelValue(Integer.valueOf(mobileVerifyServiceProvider));
             		 
             		  if(!nullAndEmpty(verificationResult)&&verificationResult.equals(MobileResultEnum.RESULTSUCCESS.getMessage())&&apptoolRecordInfo!=null){
             			 apptoolRecordInfo.setStatus(1);

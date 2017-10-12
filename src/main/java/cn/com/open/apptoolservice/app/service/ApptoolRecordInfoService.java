@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 public interface ApptoolRecordInfoService {
 
 	boolean insert(ApptoolRecordInfo apptoolRecordInfo);
-
-	void saveImageRecordInfo(HttpServletRequest request, Result result);
 	boolean saveApptoolRecordInfo(HttpServletRequest request,MobileVerifyVo mobileVerifyVo);
 	ApptoolRecordInfo findApptoolRecordInfoById(String id);
 	boolean  updateApptoolRecordInfo(ApptoolRecordInfo apptoolRecordInfo);
@@ -18,4 +16,6 @@ public interface ApptoolRecordInfoService {
 	ApptoolRecordInfo findByCondition(MobileVerifyVo mobileVerifyVo, Integer channelValue);
 
 	boolean updateByCondition(MobileVerifyVo mobileVerifyVo, Integer verifyResult);
+
+    void saveRecordInfo(HttpServletRequest request, Result result, String channelValue);
 }
