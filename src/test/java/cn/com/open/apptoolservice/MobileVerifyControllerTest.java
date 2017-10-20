@@ -33,7 +33,7 @@ public class MobileVerifyControllerTest {
 
 
     @Test
-    public void attribution() {
+    public void verify_1() {
         String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/verify";
         HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
@@ -82,7 +82,6 @@ public class MobileVerifyControllerTest {
         System.out.println(responseEntity.getBody());
     }
 
-
     @Test
     public void mobileModifyVerifyResult() {
         String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/modifyVerifyResult";
@@ -128,6 +127,23 @@ public class MobileVerifyControllerTest {
         param.add("sourceUid", "10000");
         param.add("sourceUserName", "李云龙");
         param.add("verifyResult", "92");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        System.out.println(responseEntity.getBody());
+    }
+
+    @Test
+    public void mobileModifyVerifyResultError3() {
+        String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/modifyVerifyResult";
+        HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("number",  "13699246973");
+        param.add("idCard", "410329199312211517");
+        param.add("realName", "谷旭阳qq");
+        param.add("sourceUid", "10000");
+        param.add("sourceUserName", "李云龙");
+        param.add("merchantId", "10001");
+        param.add("verifyResult", "-1");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
         System.out.println(responseEntity.getBody());

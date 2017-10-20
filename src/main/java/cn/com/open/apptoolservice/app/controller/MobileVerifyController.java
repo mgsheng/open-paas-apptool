@@ -14,6 +14,7 @@ import cn.com.open.apptoolservice.app.zxpt.zx.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -134,15 +136,27 @@ public class MobileVerifyController extends BaseController {
 			return;
 		}
 
-		boolean flag = apptoolRecordInfoService.updateByCondition(mobileVerifyVo, verifyResult);
-		if (flag) {
-			responseJason(response, new Result(Result.SUCCESS, "修改成功", "1", null));
+		ApptoolRecordInfo example = new ApptoolRecordInfo();
+		example.setIdCard(mobileVerifyVo.getIdCard());
+		example.setRealName(mobileVerifyVo.getRealName());
+		example.setPhone(mobileVerifyVo.getNumber());
+		example.setChannelValue(Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
+		List<ApptoolRecordInfo> apptoolRecordInfoList = apptoolRecordInfoService.findBySelective(example);
+
+		if (CollectionUtils.isEmpty(apptoolRecordInfoList)) {
+			responseErrorJason(response, "2", "用户不存在", null);
 		} else {
-			responseErrorJason(response, ExceptionEnum.DatabaseError);
+			ApptoolRecordInfo apptoolRecordInfo = apptoolRecordInfoList.get(0);
+			apptoolRecordInfo.setVerifyResult(verifyResult);
+
+			boolean flag = apptoolRecordInfoService.updateApptoolRecordInfo(apptoolRecordInfo);
+			if (flag) {
+				responseJason(response, new Result(Result.SUCCESS, "修改成功", "1", null));
+			} else {
+				responseErrorJason(response, ExceptionEnum.SysException);
+			}
 		}
 	}
-
-
 
 	/**
 	 * 根据type 获取对应的三网认证实现类
