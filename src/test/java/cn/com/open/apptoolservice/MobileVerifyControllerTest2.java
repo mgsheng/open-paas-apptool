@@ -23,7 +23,7 @@ import org.springframework.util.MultiValueMap;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/test.properties")
-public class MobileVerifyControllerTest {
+public class MobileVerifyControllerTest2 {
 
 
     @LocalServerPort
@@ -54,12 +54,12 @@ public class MobileVerifyControllerTest {
         HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
         param.add("number",  "13699246974");
-        param.add("idCard", "410329199312211517");
+        param.add("idCard", "");
         param.add("realName", "谷旭阳");
         param.add("sourceUid", "10000");
         param.add("sourceUserName", "李云龙");
         param.add("merchantId", "10001");
-        param.add("type", "aliyun");
+        param.add("type", "");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
         System.out.println(responseEntity.getBody());

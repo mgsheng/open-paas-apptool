@@ -78,7 +78,28 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
     	return CollectionUtils.isEmpty(apptoolRecordInfoList) ? null : apptoolRecordInfoList.get(0);
 	}
 
+	@Override
+	public boolean updateByCondition(MobileVerifyVo mobileVerifyVo, Integer verifyResult) {
+		ApptoolRecordInfo example = new ApptoolRecordInfo();
+		example.setIdCard(mobileVerifyVo.getIdCard());
+		example.setRealName(mobileVerifyVo.getRealName());
+		example.setPhone(mobileVerifyVo.getNumber());
+		example.setChannelValue(Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
+		List<ApptoolRecordInfo> apptoolRecordInfoList = apptoolRecordInfoMapper.findBySelective(example);
 
+		if (CollectionUtils.isEmpty(apptoolRecordInfoList)) {
+			return false;
+		} else {
+			ApptoolRecordInfo apptoolRecordInfo = apptoolRecordInfoList.get(0);
+			apptoolRecordInfo.setVerifyResult(verifyResult);
+			try {
+				apptoolRecordInfoMapper.updateBySelective(apptoolRecordInfo);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+	}
 
 	@Override
 	public void saveRecordInfo(HttpServletRequest request, Result result, String channelValue) {
@@ -100,10 +121,4 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
 			apptoolRecordInfo.setStatus(ImgRecordInfoStatus.fail.getCode()); //请求失败
 		this.insert(apptoolRecordInfo);
 	}
-
-	@Override
-	public List<ApptoolRecordInfo> findBySelective(ApptoolRecordInfo apptoolRecordInfo) {
-		return apptoolRecordInfoMapper.findBySelective(apptoolRecordInfo);
-	}
-
 }
