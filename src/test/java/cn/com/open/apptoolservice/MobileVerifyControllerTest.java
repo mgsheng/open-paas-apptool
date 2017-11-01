@@ -66,6 +66,23 @@ public class MobileVerifyControllerTest {
     }
 
     @Test
+    public void verify_2() {
+        String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/verify";
+        HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("number",  "17610495185");
+        param.add("idCard", "152628198206300034");
+        param.add("realName", "宋岩");
+        param.add("sourceUid", "10000");
+        param.add("sourceUserName", "李云龙");
+        param.add("merchantId", "10001");
+        param.add("type", "aliyun");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        System.out.println(responseEntity.getBody());
+    }
+
+    @Test
     public void verifyError() {
         String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/verify";
         HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
