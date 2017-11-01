@@ -78,6 +78,11 @@ public class MobileVerifyController extends BaseController {
 						payload.put("verifycationMsg", "手机号实名制信息匹配一致");
 						responseJason(response, new Result(Result.SUCCESS, ExceptionEnum.MobileVerifySuccess.getMessage(), null, payload));
 						return;
+					} else if (0 == apptoolRecordInfo.getVerifyResult()) {
+						payload.put("verificationResult", 0);
+						payload.put("verifycationMsg", "没有查询到结果");
+						responseJason(response, new Result(Result.SUCCESS, ExceptionEnum.MobileVerifySuccess.getMessage(), null, payload));
+						return;
 					}
 				} else{
 					mobileVerifyVo.setId(apptoolRecordInfo.getId());

@@ -67,6 +67,14 @@ public class AliyunVerifyServiceImpl implements MobileVerifyService {
                     payload.put("verifycationMsg", "手机号实名制信息匹配不一致");
                     message = "认证失败";
                 }
+            } else if (resCode == 10025) {
+                apptoolRecordInfo.setStatus(1);
+                apptoolRecordInfo.setChannelValue(Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
+                apptoolRecordInfo.setVerifyResult(0);
+
+                payload.put("verificationResult", 0);
+                payload.put("verifycationMsg", "没有查询到结果");
+                message = " 没有查询到结果";
             } else { // 失败
                 apptoolRecordInfo.setStatus(2);
                 apptoolRecordInfo.setChannelValue(Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
