@@ -3,7 +3,7 @@ spring:
     config:
       discovery:
         enabled: true
-        serviceId: consul-config
+        serviceId: config-server
       label: master
       profile: ${CONFIG_ENV}
     consul:
