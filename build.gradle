@@ -3,6 +3,10 @@ buildscript {
         springBootVersion = '1.5.3.RELEASE'
     }
     repositories {
+        maven {
+            name 'open'
+            url "http://maven.open.com.cn/repository/maven-public/"
+        }
         mavenCentral()
     }
     dependencies {
