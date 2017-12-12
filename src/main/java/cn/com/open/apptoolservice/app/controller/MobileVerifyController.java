@@ -63,10 +63,14 @@ public class MobileVerifyController extends BaseController {
 		}
 		MobileVerifyService mobileVerifyService = getMobileVerifyService(type);
 
+    	String channelValue;
 		if (type.equals(MobileVerifyType.ALIYUN.getCode())) {
+			channelValue = ServiceProviderEnum.AliyunMobileVerify.getValue();
 			ApptoolRecordInfo  apptoolRecordInfo = apptoolRecordInfoService.findByCondition(mobileVerifyVo, Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
 			if (apptoolRecordInfo != null) {
+				response.setHeader("channelValue", channelValue);
 				if (1 == apptoolRecordInfo.getStatus()) { //是向第三方发送成功状态   直接将原来的结果返回
+					response.setHeader("isUseCache", String.valueOf(true));
 					Map<String, Object> payload = new HashMap<>();
 					if (-1 == apptoolRecordInfo.getVerifyResult()) { //认证失败
 						payload.put("verificationResult", -1);
@@ -78,13 +82,14 @@ public class MobileVerifyController extends BaseController {
 						payload.put("verifycationMsg", "手机号实名制信息匹配一致");
 						responseJason(response, new Result(Result.SUCCESS, ExceptionEnum.MobileVerifySuccess.getMessage(), null, payload));
 						return;
-					} else if (0 == apptoolRecordInfo.getVerifyResult()) {
+					} else {
 						payload.put("verificationResult", 0);
 						payload.put("verifycationMsg", "没有查询到结果");
 						responseJason(response, new Result(Result.SUCCESS, ExceptionEnum.MobileVerifySuccess.getMessage(), null, payload));
 						return;
 					}
 				} else{
+					response.setHeader("isUseCache", String.valueOf(false));
 					mobileVerifyVo.setId(apptoolRecordInfo.getId());
 					try {
 						Result result = mobileVerifyService.attribution(mobileVerifyVo);
@@ -98,6 +103,10 @@ public class MobileVerifyController extends BaseController {
 				}
 			}
 		}
+
+		channelValue = ServiceProviderEnum.TztMobileVerifyAttribution.getValue();
+		response.setHeader("isUseCache", String.valueOf(false));
+		response.setHeader("channelValue", channelValue);
 
 		String id=DateUtil.getCurrentDateTime();
 		ApptoolRecordInfo apptoolRecordInfo = apptoolRecordInfoService.findApptoolRecordInfoById(id);

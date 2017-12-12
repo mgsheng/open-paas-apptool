@@ -16,6 +16,8 @@ public class ApptoolServiceLog {
     private String httpResponseStatus;
     private String responsePayload;
     private String logType;
+    private String channelValue;
+    private String isUseCache; //是否使用缓存
 
     public String getIp() {
         return ip;
@@ -127,5 +129,21 @@ public class ApptoolServiceLog {
 
     public void setLogType(String logType) {
         this.logType = logType;
+    }
+
+    public String getChannelValue() {
+        return channelValue;
+    }
+
+    public void setChannelValue(String channelValue) {
+        this.channelValue = channelValue;
+    }
+
+    public String getIsUseCache() {
+        return isUseCache;
+    }
+
+    public void setIsUseCache(String isUseCache) {
+        this.isUseCache = isUseCache;
     }
 }

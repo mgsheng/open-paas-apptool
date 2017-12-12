@@ -100,8 +100,8 @@ public class ThirdPartyCallAssistant {
             if ("on".equals(apptoolThirdpartyLogOnOff)) {
                 long endTime = System.currentTimeMillis();
                 ThirdPartyCallLog thirdPartyCallLog = new ThirdPartyCallLog();
-                thirdPartyCallLog.setChannelValue(ServiceProviderEnum.AliyunMobileVerify.getName());
-                thirdPartyCallLog.setChannelName(ServiceProviderEnum.AliyunMobileVerify.getValue());
+                thirdPartyCallLog.setChannelValue(ServiceProviderEnum.AliyunMobileVerify.getValue());
+                thirdPartyCallLog.setChannelName(ServiceProviderEnum.AliyunMobileVerify.getName());
                 thirdPartyCallLog.setExecutionTime((double)(endTime - startTime));
                 thirdPartyCallLog.setLogType(LogTypeEnum.ThIRDPARTY.getCode());
                 thirdPartyCallLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));

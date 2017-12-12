@@ -63,6 +63,8 @@ public class LogFilter implements Filter {
                 appToolServiceLog.setRequestPath(req.getRequestURI().replaceFirst(apptoolBaseRequestUrl, ""));
                 appToolServiceLog.setHttpResponseStatus(String.valueOf(responseCopier.getStatus()));
                 appToolServiceLog.setLogType(LogTypeEnum.SERVICE.getCode());
+                appToolServiceLog.setIsUseCache(responseCopier.getHeader("isUseCache"));
+                appToolServiceLog.setChannelValue(responseCopier.getHeader("channelValue"));
                 if (copy.length > 0) { //出现异常则 copy数组长度为0
                     String result = new String(copy, response.getCharacterEncoding());
                     JSONObject jsonObject = JSONObject.parseObject(result);
