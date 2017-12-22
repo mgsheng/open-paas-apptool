@@ -1,15 +1,5 @@
 package cn.com.open.apptoolservice.app.zxpt.test;
 
-import java.net.URLDecoder;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.RandomUtils;
-
 import cn.com.open.apptoolservice.app.zxpt.http.HttpClientUtil;
 import cn.com.open.apptoolservice.app.zxpt.rsa.RSACoderUtil;
 import cn.com.open.apptoolservice.app.zxpt.sign.MD5;
@@ -18,6 +8,10 @@ import cn.com.open.apptoolservice.app.zxpt.zx.DateUtil;
 import cn.com.open.apptoolservice.app.zxpt.zx.MobileVerifyRequest;
 import cn.com.open.apptoolservice.app.zxpt.zx.Request;
 import cn.com.open.apptoolservice.app.zxpt.zx.RequestHead;
+
+import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
