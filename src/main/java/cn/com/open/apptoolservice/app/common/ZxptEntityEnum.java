@@ -24,9 +24,6 @@ public enum ZxptEntityEnum {
     String code;
     String message;
 
-    ZxptEntityEnum() {
-    }
-
     ZxptEntityEnum(String code, String message) {
         this.code = code;
         this.message = message;

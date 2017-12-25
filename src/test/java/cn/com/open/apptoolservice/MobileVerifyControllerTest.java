@@ -2,6 +2,8 @@ package cn.com.open.apptoolservice;
 
 import cn.com.open.apptoolservice.app.Application;
 import cn.com.open.apptoolservice.util.SignatureUtil;
+import com.alibaba.fastjson.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,12 @@ public class MobileVerifyControllerTest {
         param.add("merchantId", "10001");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        System.out.println(responseEntity.getBody());
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(1, status);
+
+
     }
 
     @Test
@@ -62,7 +69,10 @@ public class MobileVerifyControllerTest {
         param.add("type", "aliyun");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        System.out.println(responseEntity.getBody());
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(1, status);
     }
 
     @Test
@@ -79,7 +89,10 @@ public class MobileVerifyControllerTest {
         param.add("type", "aliyun");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        System.out.println(responseEntity.getBody());
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(1, status);
     }
 
     @Test
@@ -96,7 +109,10 @@ public class MobileVerifyControllerTest {
         param.add("type", "aliyun");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        System.out.println(responseEntity.getBody());
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(0, status);
     }
 
     @Test
@@ -113,7 +129,10 @@ public class MobileVerifyControllerTest {
         param.add("verifyResult", "1");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        System.out.println(responseEntity.getBody());
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(1, status);
     }
 
     @Test
@@ -130,7 +149,10 @@ public class MobileVerifyControllerTest {
         param.add("verifyResult", "92");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        System.out.println(responseEntity.getBody());
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(0, status);
     }
 
     @Test
@@ -146,7 +168,10 @@ public class MobileVerifyControllerTest {
         param.add("verifyResult", "92");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        System.out.println(responseEntity.getBody());
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(0, status);
     }
 
     @Test
@@ -163,6 +188,9 @@ public class MobileVerifyControllerTest {
         param.add("verifyResult", "-1");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        System.out.println(responseEntity.getBody());
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(0, status);
     }
 }

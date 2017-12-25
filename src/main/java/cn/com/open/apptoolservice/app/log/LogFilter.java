@@ -38,47 +38,44 @@ public class LogFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         if ("on".equals(apptoolApiLogOnOff)) {
             HttpServletRequest req = (HttpServletRequest) request;
-            if(req.getRequestURI().endsWith(".png")) { //下载png接口不过滤
-                chain.doFilter(request, response);
-            } else {
-                if (response.getCharacterEncoding() == null) {
-                    response.setCharacterEncoding("UTF-8");
-                }
-                long startTime = System.currentTimeMillis(); //请求开始时间
-                HttpServletResponseCopier responseCopier = new HttpServletResponseCopier((HttpServletResponse) response);
 
-                chain.doFilter(request, responseCopier);
-                responseCopier.flushBuffer();
-
-                byte[] copy = responseCopier.getCopy();
-                long endTime = System.currentTimeMillis(); //请求结束时间
-                ApptoolServiceLog appToolServiceLog = new ApptoolServiceLog();
-                appToolServiceLog.setIp(getIpAddr(req));
-                appToolServiceLog.setRequestURL(req.getRequestURL().toString());
-                appToolServiceLog.setAppKey(req.getHeader("appKey"));
-                appToolServiceLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
-                appToolServiceLog.setHttpMethod(req.getMethod());
-                appToolServiceLog.setRequestParam(requestParamsToJSON(req));
-                appToolServiceLog.setExecutionTime((double)(endTime - startTime));
-                appToolServiceLog.setRequestPath(req.getRequestURI().replaceFirst(apptoolBaseRequestUrl, ""));
-                appToolServiceLog.setHttpResponseStatus(String.valueOf(responseCopier.getStatus()));
-                appToolServiceLog.setLogType(LogTypeEnum.SERVICE.getCode());
-                appToolServiceLog.setIsUseCache(responseCopier.getHeader("isUseCache"));
-                appToolServiceLog.setChannelValue(responseCopier.getHeader("channelValue"));
-                if (copy.length > 0) { //出现异常则 copy数组长度为0
-                    String result = new String(copy, response.getCharacterEncoding());
-                    JSONObject jsonObject = JSONObject.parseObject(result);
-                    appToolServiceLog.setInvokeStatus(jsonObject.getInteger("status"));
-                    appToolServiceLog.setErrorCode(jsonObject.getString("errorCode"));
-                    appToolServiceLog.setErrorMessage(jsonObject.getString("message"));
-                    appToolServiceLog.setResponsePayload(jsonObject.getJSONObject("payload") == null ? null : jsonObject.getJSONObject("payload").toJSONString());
-                } else { //处理出现异常
-                    appToolServiceLog.setInvokeStatus(Result.ERROR);
-                    appToolServiceLog.setErrorCode(ExceptionEnum.SysException.getCode());
-                    appToolServiceLog.setErrorMessage(ExceptionEnum.SysException.getMessage());
-                }
-                imageServiceLogSender.sendServiceLog(appToolServiceLog); //记录响应日志*/
+            if (response.getCharacterEncoding() == null) {
+                response.setCharacterEncoding("UTF-8");
             }
+            long startTime = System.currentTimeMillis(); //请求开始时间
+            HttpServletResponseCopier responseCopier = new HttpServletResponseCopier((HttpServletResponse) response);
+
+            chain.doFilter(request, responseCopier);
+            responseCopier.flushBuffer();
+
+            byte[] copy = responseCopier.getCopy();
+            long endTime = System.currentTimeMillis(); //请求结束时间
+            ApptoolServiceLog appToolServiceLog = new ApptoolServiceLog();
+            appToolServiceLog.setIp(getIpAddr(req));
+            appToolServiceLog.setRequestURL(req.getRequestURL().toString());
+            appToolServiceLog.setAppKey(req.getHeader("appKey"));
+            appToolServiceLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
+            appToolServiceLog.setHttpMethod(req.getMethod());
+            appToolServiceLog.setRequestParam(requestParamsToJSON(req));
+            appToolServiceLog.setExecutionTime((double)(endTime - startTime));
+            appToolServiceLog.setRequestPath(req.getRequestURI().replaceFirst(apptoolBaseRequestUrl, ""));
+            appToolServiceLog.setHttpResponseStatus(String.valueOf(responseCopier.getStatus()));
+            appToolServiceLog.setLogType(LogTypeEnum.SERVICE.getCode());
+            appToolServiceLog.setIsUseCache(responseCopier.getHeader("isUseCache"));
+            appToolServiceLog.setChannelValue(responseCopier.getHeader("channelValue"));
+            if (copy.length > 0) { //出现异常则 copy数组长度为0
+                String result = new String(copy, response.getCharacterEncoding());
+                JSONObject jsonObject = JSONObject.parseObject(result);
+                appToolServiceLog.setInvokeStatus(jsonObject.getInteger("status"));
+                appToolServiceLog.setErrorCode(jsonObject.getString("errorCode"));
+                appToolServiceLog.setErrorMessage(jsonObject.getString("message"));
+                appToolServiceLog.setResponsePayload(jsonObject.getJSONObject("payload") == null ? null : jsonObject.getJSONObject("payload").toJSONString());
+            } else { //处理出现异常
+                appToolServiceLog.setInvokeStatus(Result.ERROR);
+                appToolServiceLog.setErrorCode(ExceptionEnum.SysException.getCode());
+                appToolServiceLog.setErrorMessage(ExceptionEnum.SysException.getMessage());
+            }
+            imageServiceLogSender.sendServiceLog(appToolServiceLog); //记录响应日志*/
         } else {
             chain.doFilter(request, response);
         }

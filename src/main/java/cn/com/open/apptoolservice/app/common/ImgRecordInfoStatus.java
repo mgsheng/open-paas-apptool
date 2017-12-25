@@ -14,9 +14,6 @@ public enum ImgRecordInfoStatus {
     Integer code;
     String message;
 
-    ImgRecordInfoStatus() {
-    }
-
     ImgRecordInfoStatus(Integer code, String message) {
         this.code = code;
         this.message = message;

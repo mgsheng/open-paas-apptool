@@ -12,8 +12,6 @@ public enum PlatformEnum {
     String code;
     String message;
 
-    PlatformEnum() {
-    }
 
     PlatformEnum(String code, String message) {
         this.code = code;

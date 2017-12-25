@@ -13,9 +13,6 @@ public enum MobileResultEnum {
     String code;
     String message;
 
-    MobileResultEnum() {
-    }
-
     MobileResultEnum(String code, String message) {
         this.code = code;
         this.message = message;

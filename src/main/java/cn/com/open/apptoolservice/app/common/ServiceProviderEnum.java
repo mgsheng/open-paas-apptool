@@ -14,9 +14,6 @@ public enum ServiceProviderEnum {
     String name;
     String value;
 
-    ServiceProviderEnum() {
-    }
-
     ServiceProviderEnum(String name, String value) {
         this.name = name;
         this.value = value;

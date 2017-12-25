@@ -2,6 +2,9 @@ package cn.com.open.apptoolservice;
 
 import cn.com.open.apptoolservice.app.Application;
 import cn.com.open.apptoolservice.util.SignatureUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +46,46 @@ public class PhoneControllerTest {
         param.add("sourceUserName", "李云龙");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        System.out.println(responseEntity.getBody());
+        String json = responseEntity.getBody();
+
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(1, status);
+    }
+
+    @Test //手机号码为空
+    public void attribution_error1() {
+        String url =  "http://localhost:" + port + "/api/apptoolservice/v1/phone/attribution";
+        HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("merchantId", 10001);
+        param.add("sourceUid", "10000");
+        param.add("sourceUserName", "李云龙");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        String json = responseEntity.getBody();
+
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(0, status);
+    }
+
+    @Test //商户id为空
+    public void attribution_error() {
+        String url =  "http://localhost:" + port + "/api/apptoolservice/v1/phone/attribution";
+        String number = "13699246974";
+        HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("number", number);
+        param.add("sourceUid", "10000");
+        param.add("sourceUserName", "李云龙");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        String json = responseEntity.getBody();
+
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(0, status);
     }
 
 }

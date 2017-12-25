@@ -40,7 +40,7 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
 		   	  apptoolRecordInfo.setPhone(mobileVerifyVo.getNumber());
 		   	  apptoolRecordInfo.setIdCard(mobileVerifyVo.getIdCard());
 		   	  apptoolRecordInfo.setRealName(mobileVerifyVo.getRealName());
-		   	  apptoolRecordInfo.setAppKey(request.getHeader(FormEnum.APPKEY.getCode()));
+		   	  apptoolRecordInfo.setAppKey(request.getHeader("AppKey"));
 		   	  apptoolRecordInfo.setSourceUid(mobileVerifyVo.getSourceUid());
 		   	  apptoolRecordInfo.setSourceUsername(mobileVerifyVo.getSourceUserName());
 		   	  apptoolRecordInfo.setMerchantId(Integer.parseInt(mobileVerifyVo.getMerchantId()));
@@ -84,7 +84,7 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
 	public void saveRecordInfo(HttpServletRequest request, Result result, String channelValue) {
 		ApptoolRecordInfo apptoolRecordInfo = new ApptoolRecordInfo();
 		apptoolRecordInfo.setId(DateUtil.getCurrentDateTime());
-		apptoolRecordInfo.setAppKey(request.getHeader(FormEnum.APPKEY.getCode()));
+		apptoolRecordInfo.setAppKey(request.getHeader("AppKey"));
 		apptoolRecordInfo.setCreateTime(new Date());
 		apptoolRecordInfo.setServiceName(request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/') + 1));
 		apptoolRecordInfo.setMerchantId(Integer.parseInt(request.getParameter("merchantId")));

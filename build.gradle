@@ -27,7 +27,12 @@ sonarqube {
 
 sonarqube {
     properties {
-        property "sonar.exclusions", "src/main/java/cn/com/open/apptoolservice/app/zxpt/**/*"
+        property "sonar.exclusions", "src/main/java/cn/com/open/apptoolservice/app/zxpt/**/*," +
+                "src/main/java/cn/com/open/apptoolservice/app/entity/App.java," +
+                "src/main/java/cn/com/open/apptoolservice/app/service/impl/AliyunVerifyServiceImpl.java," +
+                "src/main/java/cn/com/open/apptoolservice/app/common/BasePage.java,"+
+                "src/main/java/cn/com/open/apptoolservice/app/log/support/HttpServletResponseCopier.java," +
+                "src/main/java/cn/com/open/apptoolservice/app/common/BaseController.java"
         property "sonar.sources", "./src/main/java"
         property "sonar.tests", "./src/test/java"
 

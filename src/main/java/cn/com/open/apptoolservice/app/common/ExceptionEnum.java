@@ -33,9 +33,6 @@ public enum ExceptionEnum {
     String code;
     String message;
 
-    ExceptionEnum() {
-    }
-
     ExceptionEnum(String code, String message) {
         this.code = code;
         this.message = message;

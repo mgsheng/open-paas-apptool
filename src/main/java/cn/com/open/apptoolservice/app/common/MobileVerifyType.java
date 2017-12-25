@@ -7,9 +7,6 @@ public enum MobileVerifyType {
     String code;
     String message;
 
-    MobileVerifyType() {
-    }
-
     MobileVerifyType(String code, String message) {
         this.code = code;
         this.message = message;

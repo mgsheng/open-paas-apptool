@@ -1,7 +1,5 @@
 package cn.com.open.apptoolservice.app.common;
 
-import cn.com.open.apptoolservice.app.common.ExceptionEnum;
-import cn.com.open.apptoolservice.app.common.Result;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
