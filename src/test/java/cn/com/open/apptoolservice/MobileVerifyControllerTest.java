@@ -27,12 +27,10 @@ import org.springframework.util.MultiValueMap;
 @TestPropertySource("/test.properties")
 public class MobileVerifyControllerTest {
 
-
     @LocalServerPort
     private int port;
     @Autowired
     private TestRestTemplate restTemplate;
-
 
     @Test
     public void verify_1() {
@@ -51,8 +49,6 @@ public class MobileVerifyControllerTest {
         JSONObject jsonObject = JSONObject.parseObject(json);
         int status = jsonObject.getInteger("status");
         Assert.assertEquals(1, status);
-
-
     }
 
     @Test
@@ -107,6 +103,46 @@ public class MobileVerifyControllerTest {
         param.add("sourceUserName", "李云龙");
         param.add("merchantId", "10001");
         param.add("type", "aliyun");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(1, status);
+    }
+
+    @Test //type错误
+    public void verifyError_1() {
+        String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/verify";
+        HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("number",  "13699246973");
+        param.add("idCard", "410329199312211517");
+        param.add("realName", "谷旭阳");
+        param.add("sourceUid", "10000");
+        param.add("sourceUserName", "李云龙");
+        param.add("merchantId", "10001");
+        param.add("type", "hehe");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(0, status);
+    }
+
+    @Test
+    public void verifyError_2() {
+        String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/verify";
+        HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        //param.add("number",  "13699246973");
+        //param.add("idCard", "410329199312211517");
+        //param.add("realName", "谷旭阳");
+        param.add("sourceUid", "10000");
+        param.add("sourceUserName", "李云龙");
+        param.add("merchantId", "10001");
+        param.add("type", "hehe");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
         String json = responseEntity.getBody();

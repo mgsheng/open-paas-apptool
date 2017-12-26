@@ -16,18 +16,6 @@ public enum MobileVerifyType {
         return code;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public static MobileVerifyType getByCode(String code) {
         MobileVerifyType[] values = MobileVerifyType.values();
         for (MobileVerifyType value : values) {

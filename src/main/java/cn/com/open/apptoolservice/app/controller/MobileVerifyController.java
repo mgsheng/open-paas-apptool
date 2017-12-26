@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,7 +52,7 @@ public class MobileVerifyController extends BaseController {
     public void verify( HttpServletResponse response,HttpServletRequest request,
 						MobileVerifyVo mobileVerifyVo,
 						@RequestParam(defaultValue = "tcl") String type) {
-    	if (StringUtils.isEmpty(type) || MobileVerifyType.getByCode(type) == null) {
+    	if (MobileVerifyType.getByCode(type) == null) {
 			responseErrorJason(response, ExceptionEnum.ParameterError.getCode(),ExceptionEnum.ParameterError.getMessage());
 			return;
 		}
