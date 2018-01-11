@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -92,12 +93,22 @@ public class ApptoolRecordInfoServiceImpl implements ApptoolRecordInfoService {
 		apptoolRecordInfo.setSourceUid(request.getParameter("sourceUid"));
 		apptoolRecordInfo.setPhone(request.getParameter("number"));
 		apptoolRecordInfo.setChannelValue(Integer.valueOf(channelValue));
-		if (result == null)
+		if (result == null) {
 			apptoolRecordInfo.setStatus(ImgRecordInfoStatus.exception.getCode()); //请求异常
-		else if (Result.SUCCESS.equals(result.getStatus()))
+		}
+		else if (Result.SUCCESS.equals(result.getStatus())) {
 			apptoolRecordInfo.setStatus(ImgRecordInfoStatus.success.getCode()); //请求成功
-		else
+			Map<String, Object> ignore = result.getIgnore();
+			if (ignore != null && !ignore.isEmpty()) {
+				apptoolRecordInfo.setLogId(String.valueOf(ignore.get("logId")));
+			}
+		} else {
 			apptoolRecordInfo.setStatus(ImgRecordInfoStatus.fail.getCode()); //请求失败
+			Map<String, Object> ignore = result.getIgnore();
+			if (ignore != null && !ignore.isEmpty()) {
+				apptoolRecordInfo.setLogId(String.valueOf(ignore.get("logId")));
+			}
+		}
 		this.insert(apptoolRecordInfo);
 	}
 

@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 个人三大运营商手机号码验证
@@ -65,7 +62,7 @@ public class MobileVerifyController extends BaseController {
     	String channelValue;
 		if (type.equals(MobileVerifyType.ALIYUN.getCode())) {
 			channelValue = ServiceProviderEnum.AliyunMobileVerify.getValue();
-			ApptoolRecordInfo  apptoolRecordInfo = apptoolRecordInfoService.findByCondition(mobileVerifyVo, Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
+			ApptoolRecordInfo apptoolRecordInfo = apptoolRecordInfoService.findByCondition(mobileVerifyVo, Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
 			if (apptoolRecordInfo != null) {
 				response.setHeader("channelValue", channelValue);
 				if (1 == apptoolRecordInfo.getStatus()) { //是向第三方发送成功状态   直接将原来的结果返回
@@ -87,11 +84,15 @@ public class MobileVerifyController extends BaseController {
 						responseJason(response, new Result(Result.SUCCESS, ExceptionEnum.MobileVerifySuccess.getMessage(), null, payload));
 						return;
 					}
-				} else{
+				} else {
 					response.setHeader("isUseCache", String.valueOf(false));
 					mobileVerifyVo.setId(apptoolRecordInfo.getId());
 					try {
 						Result result = mobileVerifyService.attribution(mobileVerifyVo);
+						Map<String, Object> ignore = result.getIgnore();
+						if (ignore != null && !ignore.isEmpty()) {
+							response.setHeader("logId", String.valueOf(ignore.get("logId")));
+						}
 						responseJason(response, result);
 						return;
 					} catch (Exception e) {
@@ -107,7 +108,9 @@ public class MobileVerifyController extends BaseController {
 		response.setHeader("isUseCache", String.valueOf(false));
 		response.setHeader("channelValue", channelValue);
 
-		String id=DateUtil.getCurrentDateTime();
+		//String id=DateUtil.getCurrentDateTime();
+		Random random = new Random();
+		String id = cn.com.open.apptoolservice.app.utils.DateUtil.dateToString(new Date(), "yyyyMMddhh24mmssSSS") + String.valueOf(random.nextInt(9000) + 1000);
 		ApptoolRecordInfo apptoolRecordInfo = apptoolRecordInfoService.findApptoolRecordInfoById(id);
    	    if(apptoolRecordInfo!=null){
    	    	responseErrorJason(response, ExceptionEnum.EntiryIsNotNull.getCode(),ExceptionEnum.EntiryIsNotNull.getMessage());
@@ -118,7 +121,11 @@ public class MobileVerifyController extends BaseController {
    	   	    	if(f){
    	   	        	//第三方验证
    	   	   	    	Result result = mobileVerifyService.attribution(mobileVerifyVo);
-   	   	   	    	responseJason(response, result);
+					Map<String, Object> ignore = result.getIgnore();
+					if (ignore != null && !ignore.isEmpty()) {
+						response.setHeader("logId", String.valueOf(ignore.get("logId")));
+					}
+					responseJason(response, result);
    	   	    	}else{
    	   	    		responseErrorJason(response, ExceptionEnum.AddEntityError);
    	   	    	}
@@ -126,9 +133,7 @@ public class MobileVerifyController extends BaseController {
    	    		log.error(e.getMessage());
    	            responseErrorJason(response, ExceptionEnum.SysException);
    	        }
-   	    
    	    }
-   	    
     }
 
 	/**
@@ -167,8 +172,6 @@ public class MobileVerifyController extends BaseController {
 			}
 		}
 	}
-
-
 
 	/**
 	 * 根据type 获取对应的三网认证实现类

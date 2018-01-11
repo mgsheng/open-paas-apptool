@@ -47,6 +47,7 @@ public class AliyunPhoneServiceImpl implements PhoneService {
         querys.put("num", number);
         AliyunResponseBean aliyunResponseBean = thirdPartyCallAssistant.attribution(apptoolTradeChannel.getRequestUrl(), headers, HttpMethod.GET, querys, phoneAttributionServiceProvider);
         String text = aliyunResponseBean.getJson();
+
         Result result;
         if (StringUtils.isNotEmpty(text)) {
             JSONObject jsonObject = JSONObject.parseObject(text);
@@ -60,6 +61,7 @@ public class AliyunPhoneServiceImpl implements PhoneService {
                     map.put("type",  resBody.getInteger("type"));
                     map.put("name",  resBody.getString("name"));
                     result = new Result(Result.SUCCESS, "查询归属地成功", null, map);
+
                 } else {
                     String errorInfo = resBody.getString("error_info");
                     result = new Result(Result.ERROR, ExceptionEnum.SysException.getMessage(),
@@ -70,8 +72,12 @@ public class AliyunPhoneServiceImpl implements PhoneService {
                         ExceptionEnum.SysException.getCode(), null);
             }
         } else {
-            result =  new Result(Result.ERROR, ExceptionEnum.SysException.getMessage(),  ExceptionEnum.SysException.getCode(), null);
+            result = new Result(Result.ERROR, ExceptionEnum.SysException.getMessage(),  ExceptionEnum.SysException.getCode(), null);
         }
+
+        HashMap<String, Object> ignore = new HashMap<>();
+        ignore.put("logId", aliyunResponseBean.getLogId());
+        result.setIgnore(ignore);
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         apptoolRecordInfoService.saveRecordInfo(request, result, phoneAttributionServiceProvider);

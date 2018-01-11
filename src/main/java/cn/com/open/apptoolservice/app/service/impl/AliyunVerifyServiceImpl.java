@@ -42,6 +42,11 @@ public class AliyunVerifyServiceImpl implements MobileVerifyService {
         String text = aliyunResponseBean.getJson();
 
         ApptoolRecordInfo apptoolRecordInfo = apptoolRecordInfoService.findApptoolRecordInfoById(mobileVerifyVo.getId());
+        apptoolRecordInfo.setLogId(aliyunResponseBean.getLogId());
+
+        Map<String, Object> ignore = new HashMap<>();
+        ignore.put("logId", aliyunResponseBean.getLogId());
+
         Map<String, Object> payload = new HashMap<>();
         String message = "";
 
@@ -79,16 +84,22 @@ public class AliyunVerifyServiceImpl implements MobileVerifyService {
                 apptoolRecordInfo.setStatus(2);
                 apptoolRecordInfo.setChannelValue(Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
                 apptoolRecordInfoService.updateApptoolRecordInfo(apptoolRecordInfo);
-                return new Result(Result.ERROR, ExceptionEnum.ThirdBodyError.getMessage(), ExceptionEnum.ThirdBodyError.getCode(), null);
+                Result result = new Result(Result.ERROR, ExceptionEnum.ThirdBodyError.getMessage(), ExceptionEnum.ThirdBodyError.getCode(), null);
+                result.setIgnore(ignore);
+                return result;
             }
             apptoolRecordInfoService.updateApptoolRecordInfo(apptoolRecordInfo);
-            return new Result(Result.SUCCESS, message, null, payload);
+            Result result = new Result(Result.SUCCESS, message, null, payload);
+            result.setIgnore(ignore);
+            return result;
         }
 
         apptoolRecordInfo.setStatus(2);
         apptoolRecordInfo.setChannelValue(Integer.valueOf(ServiceProviderEnum.AliyunMobileVerify.getValue()));
         apptoolRecordInfoService.updateApptoolRecordInfo(apptoolRecordInfo);
-        return new Result(Result.ERROR, ExceptionEnum.ThirdBodyError.getMessage(), ExceptionEnum.ThirdBodyError.getCode(), null);
+        Result result = new Result(Result.ERROR, ExceptionEnum.ThirdBodyError.getMessage(), ExceptionEnum.ThirdBodyError.getCode(), null);
+        result.setIgnore(ignore);
+        return result;
     }
 
 }

@@ -37,7 +37,10 @@ public class ThirdPartyCallAssistant {
         try {
             HttpResponse response = HttpUtils.doGet(url, null, httpMethod, headers, querys);
             aliyunResponseBean = new AliyunResponseBean();
+
             Map<String, String> responseHeaders = new HashMap<>();
+            String logId = response.getHeaders("X-Ca-Request-Id")[0].getValue();
+            aliyunResponseBean.setLogId(logId);
             responseHeaders.put("X-Ca-Request-Id", Arrays.toString(response.getHeaders("X-Ca-Request-Id")));
             responseHeaders.put("X-Ca-Error-Message", Arrays.toString(response.getHeaders("X-Ca-Error-Message")));
             aliyunResponseBean.setHeards(responseHeaders);
@@ -48,15 +51,16 @@ public class ThirdPartyCallAssistant {
         } finally {
             if ("on".equals(apptoolThirdpartyLogOnOff)) {
                 long endTime = System.currentTimeMillis();
-                ThirdPartyCallLog thirdPartyCallLog = new ThirdPartyCallLog();
-                thirdPartyCallLog.setChannelValue(channelValue);
-                thirdPartyCallLog.setChannelName(ServiceProviderEnum.getNameByValue(channelValue));
-                thirdPartyCallLog.setExecutionTime((double)(endTime - startTime));
-                thirdPartyCallLog.setLogType(LogTypeEnum.ThIRDPARTY.getCode());
-                thirdPartyCallLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                com.alibaba.fastjson.JSONObject thirdPartyCallLog = new com.alibaba.fastjson.JSONObject();
+                thirdPartyCallLog.put("channelValue", String.valueOf(channelValue));
+                thirdPartyCallLog.put("channelName", ServiceProviderEnum.getNameByValue(channelValue));
+                thirdPartyCallLog.put("executionTime", (double)(endTime - startTime));
+                thirdPartyCallLog.put("logType", LogTypeEnum.ThIRDPARTY.getCode());
+                thirdPartyCallLog.put("createTime", DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
                 if (aliyunResponseBean != null) {
-                    thirdPartyCallLog.setResponseText(aliyunResponseBean.getJson());
-                    thirdPartyCallLog.setResponseHeaderParam(JSONObject.valueToString(aliyunResponseBean.getHeards()));
+                    thirdPartyCallLog.put("responseText", aliyunResponseBean.getJson());
+                    thirdPartyCallLog.put("responseHeaderParam", JSONObject.valueToString(aliyunResponseBean.getHeards()));
+                    thirdPartyCallLog.put("logId", aliyunResponseBean.getLogId());
                 }
                 apptoolServiceLogSender.sendThirdPartyCallLog(thirdPartyCallLog);
             }
@@ -92,6 +96,8 @@ public class ThirdPartyCallAssistant {
             responseHeaders.put("X-Ca-Request-Id", Arrays.toString(response.getHeaders("X-Ca-Request-Id")));
             responseHeaders.put("X-Ca-Error-Message", Arrays.toString(response.getHeaders("X-Ca-Error-Message")));
             aliyunResponseBean.setHeards(responseHeaders);
+            String logId = response.getHeaders("X-Ca-Request-Id")[0].getValue();
+            aliyunResponseBean.setLogId(logId);
             String text = EntityUtils.toString(response.getEntity());
             log.info("aliyun response text {} ", text);
             aliyunResponseBean.setJson(text);
@@ -99,15 +105,16 @@ public class ThirdPartyCallAssistant {
         } finally {
             if ("on".equals(apptoolThirdpartyLogOnOff)) {
                 long endTime = System.currentTimeMillis();
-                ThirdPartyCallLog thirdPartyCallLog = new ThirdPartyCallLog();
-                thirdPartyCallLog.setChannelValue(ServiceProviderEnum.AliyunMobileVerify.getValue());
-                thirdPartyCallLog.setChannelName(ServiceProviderEnum.AliyunMobileVerify.getName());
-                thirdPartyCallLog.setExecutionTime((double)(endTime - startTime));
-                thirdPartyCallLog.setLogType(LogTypeEnum.ThIRDPARTY.getCode());
-                thirdPartyCallLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                com.alibaba.fastjson.JSONObject thirdPartyCallLog = new com.alibaba.fastjson.JSONObject();
+                thirdPartyCallLog.put("channelValue", ServiceProviderEnum.AliyunMobileVerify.getValue());
+                thirdPartyCallLog.put("channelName", ServiceProviderEnum.AliyunMobileVerify.getName());
+                thirdPartyCallLog.put("executionTime", (double)(endTime - startTime));
+                thirdPartyCallLog.put("logType", LogTypeEnum.ThIRDPARTY.getCode());
+                thirdPartyCallLog.put("createTime", DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
                 if (aliyunResponseBean != null) {
-                    thirdPartyCallLog.setResponseText(aliyunResponseBean.getJson());
-                    thirdPartyCallLog.setResponseHeaderParam(JSONObject.valueToString(aliyunResponseBean.getHeards()));
+                    thirdPartyCallLog.put("responseText", aliyunResponseBean.getJson());
+                    thirdPartyCallLog.put("responseHeaderParam", JSONObject.valueToString(aliyunResponseBean.getHeards()));
+                    thirdPartyCallLog.put("logId", aliyunResponseBean.getLogId());
                 }
                 apptoolServiceLogSender.sendThirdPartyCallLog(thirdPartyCallLog);
             }

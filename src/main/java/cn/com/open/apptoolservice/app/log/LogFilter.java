@@ -4,7 +4,6 @@ package cn.com.open.apptoolservice.app.log;
 import cn.com.open.apptoolservice.app.common.ExceptionEnum;
 import cn.com.open.apptoolservice.app.common.LogTypeEnum;
 import cn.com.open.apptoolservice.app.common.Result;
-import cn.com.open.apptoolservice.app.log.support.ApptoolServiceLog;
 import cn.com.open.apptoolservice.app.log.support.HttpServletResponseCopier;
 import cn.com.open.apptoolservice.app.utils.DateUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -23,7 +22,7 @@ import java.util.Map;
 public class LogFilter implements Filter {
 
     @Autowired
-    private ApptoolServiceLogSender imageServiceLogSender;
+    private ApptoolServiceLogSender serviceLogSender;
     @Value("${apptool.base.request.url}")
     private String apptoolBaseRequestUrl;
     @Value("${apptool.api.log.onOff}")
@@ -50,32 +49,36 @@ public class LogFilter implements Filter {
 
             byte[] copy = responseCopier.getCopy();
             long endTime = System.currentTimeMillis(); //请求结束时间
-            ApptoolServiceLog appToolServiceLog = new ApptoolServiceLog();
-            appToolServiceLog.setIp(getIpAddr(req));
-            appToolServiceLog.setRequestURL(req.getRequestURL().toString());
-            appToolServiceLog.setAppKey(req.getHeader("appKey"));
-            appToolServiceLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
-            appToolServiceLog.setHttpMethod(req.getMethod());
-            appToolServiceLog.setRequestParam(requestParamsToJSON(req));
-            appToolServiceLog.setExecutionTime((double)(endTime - startTime));
-            appToolServiceLog.setRequestPath(req.getRequestURI().replaceFirst(apptoolBaseRequestUrl, ""));
-            appToolServiceLog.setHttpResponseStatus(String.valueOf(responseCopier.getStatus()));
-            appToolServiceLog.setLogType(LogTypeEnum.SERVICE.getCode());
-            appToolServiceLog.setIsUseCache(responseCopier.getHeader("isUseCache"));
-            appToolServiceLog.setChannelValue(responseCopier.getHeader("channelValue"));
+
+            JSONObject apiServiceLog = requestParamsToJSON(req);
+            apiServiceLog.put("ip", getIpAddr(req));
+            apiServiceLog.put("requestURL", req.getRequestURL().toString());
+            apiServiceLog.put("appKey", req.getHeader("appKey"));
+            apiServiceLog.put("createTime", DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
+            apiServiceLog.put("httpMethod", req.getMethod());
+            apiServiceLog.put("executionTime", (double)(endTime - startTime));
+            apiServiceLog.put("requestPath", req.getRequestURI().replaceFirst(apptoolBaseRequestUrl, ""));
+            apiServiceLog.put("httpResponseStatus", String.valueOf(responseCopier.getStatus()));
+            apiServiceLog.put("logType", LogTypeEnum.SERVICE.getCode());
+
+            apiServiceLog.put("isUseCache", responseCopier.getHeader("isUseCache"));
+            apiServiceLog.put("channelValue", responseCopier.getHeader("channelValue"));
+            apiServiceLog.put("logId", responseCopier.getHeader("logId"));
+
             if (copy.length > 0) { //出现异常则 copy数组长度为0
                 String result = new String(copy, response.getCharacterEncoding());
                 JSONObject jsonObject = JSONObject.parseObject(result);
-                appToolServiceLog.setInvokeStatus(jsonObject.getInteger("status"));
-                appToolServiceLog.setErrorCode(jsonObject.getString("errorCode"));
-                appToolServiceLog.setErrorMessage(jsonObject.getString("message"));
-                appToolServiceLog.setResponsePayload(jsonObject.getJSONObject("payload") == null ? null : jsonObject.getJSONObject("payload").toJSONString());
+
+                apiServiceLog.put("invokeStatus", jsonObject.getInteger("status"));
+                apiServiceLog.put("errorCode", jsonObject.getString("errorCode"));
+                apiServiceLog.put("errorMessage", jsonObject.getString("message"));
+                apiServiceLog.put("responsePayload", jsonObject.getJSONObject("payload") == null ? null : jsonObject.getJSONObject("payload").toJSONString());
             } else { //处理出现异常
-                appToolServiceLog.setInvokeStatus(Result.ERROR);
-                appToolServiceLog.setErrorCode(ExceptionEnum.SysException.getCode());
-                appToolServiceLog.setErrorMessage(ExceptionEnum.SysException.getMessage());
+                apiServiceLog.put("invokeStatus", Result.ERROR);
+                apiServiceLog.put("errorCode", ExceptionEnum.SysException.getCode());
+                apiServiceLog.put("errorMessage", ExceptionEnum.SysException.getMessage());
             }
-            imageServiceLogSender.sendServiceLog(appToolServiceLog); //记录响应日志*/
+            serviceLogSender.sendServiceLog(apiServiceLog); //记录响应日志*/
         } else {
             chain.doFilter(request, response);
         }
@@ -91,18 +94,18 @@ public class LogFilter implements Filter {
      * @param req req
      * @return string
      */
-    private String requestParamsToJSON(ServletRequest req) {
+    private JSONObject requestParamsToJSON(ServletRequest req) {
+        JSONObject jsonObj = new JSONObject();
         Map<String,String[]> params = req.getParameterMap();
         if (params == null || params.isEmpty()) {
-            return null;
+            return jsonObj;
         }
-        JSONObject jsonObj = new JSONObject();
         for (Map.Entry<String,String[]> entry : params.entrySet()) {
-            String v[] = entry.getValue();
+            String[] v = entry.getValue();
             Object o = (v.length == 1) ? v[0] : v;
             jsonObj.put(entry.getKey(), o);
         }
-        return jsonObj.toJSONString();
+        return jsonObj;
     }
 
     /**

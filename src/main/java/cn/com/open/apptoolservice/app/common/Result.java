@@ -1,5 +1,9 @@
 package cn.com.open.apptoolservice.app.common;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
+import java.util.Map;
+
 public class Result {
 
     public static final Integer SUCCESS = 1;
@@ -9,6 +13,8 @@ public class Result {
     private String message;
     private String errorCode;
     private Object payload;
+    @JSONField(serialize = false)
+    private Map<String, Object> ignore;
 
     public Result() {
     }
@@ -52,4 +58,11 @@ public class Result {
         this.payload = payload;
     }
 
+    public Map<String, Object> getIgnore() {
+        return ignore;
+    }
+
+    public void setIgnore(Map<String, Object> ignore) {
+        this.ignore = ignore;
+    }
 }
