@@ -79,8 +79,9 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
 		String decode = new String(outdata, charset);
 		String decodexml = URLDecoder.decode(decode, charset);
 
+
 		//记录日志
-		thirdPartyCallAssistant.zxMobileVerifyLog(startTime, decodexml, mobileVerifyServiceProvider);
+		thirdPartyCallAssistant.zxMobileVerifyLog(startTime, decodexml, mobileVerifyServiceProvider, mobileVerifyVo.getId());
 
         if (StringUtils.isNotEmpty(decodexml)) {
         	JSONObject xmlJSONObj = XML.toJSONObject(decodexml);
@@ -111,6 +112,7 @@ public class ZxMobileVerifyServiceImpl implements MobileVerifyService {
             		 log.info("请求结果zxpt：{} : {}", orderId, orderNo);
             		 ApptoolRecordInfo apptoolRecordInfo= apptoolRecordInfoService.findApptoolRecordInfoById(orderId);
             		 apptoolRecordInfo.setChannelValue(Integer.valueOf(mobileVerifyServiceProvider));
+            		 apptoolRecordInfo.setLogId(mobileVerifyVo.getId());
             		 
             		  if(!nullAndEmpty(verificationResult)&&verificationResult.equals(MobileResultEnum.RESULTSUCCESS.getMessage())&&apptoolRecordInfo!=null){
             			 apptoolRecordInfo.setStatus(1);

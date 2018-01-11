@@ -4,7 +4,6 @@ package cn.com.open.apptoolservice.app.log;
 import cn.com.open.apptoolservice.app.common.LogTypeEnum;
 import cn.com.open.apptoolservice.app.common.ServiceProviderEnum;
 import cn.com.open.apptoolservice.app.log.support.AliyunResponseBean;
-import cn.com.open.apptoolservice.app.log.support.ThirdPartyCallLog;
 import cn.com.open.apptoolservice.app.utils.DateUtil;
 import com.aliyun.api.gateway.demo.util.HttpUtils;
 import org.apache.http.HttpResponse;
@@ -67,17 +66,19 @@ public class ThirdPartyCallAssistant {
         }
     }
 
-    public void zxMobileVerifyLog(long startTime, String decodeXml, String channelValue) {
+    public void zxMobileVerifyLog(long startTime, String decodeXml, String channelValue, String logId) {
         try {
             if ("on".equals(apptoolThirdpartyLogOnOff)) {
                 long endTime = System.currentTimeMillis();
-                ThirdPartyCallLog thirdPartyCallLog = new ThirdPartyCallLog();
-                thirdPartyCallLog.setChannelValue(channelValue);
-                thirdPartyCallLog.setChannelName(ServiceProviderEnum.getNameByValue(channelValue));
-                thirdPartyCallLog.setExecutionTime((double)(endTime - startTime));
-                thirdPartyCallLog.setLogType(LogTypeEnum.ThIRDPARTY.getCode());
-                thirdPartyCallLog.setCreateTime(DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
-                thirdPartyCallLog.setResponseText(decodeXml);
+                com.alibaba.fastjson.JSONObject thirdPartyCallLog = new com.alibaba.fastjson.JSONObject();
+                thirdPartyCallLog.put("channelValue", String.valueOf(channelValue));
+                thirdPartyCallLog.put("channelName", ServiceProviderEnum.getNameByValue(channelValue));
+                thirdPartyCallLog.put("executionTime", (double)(endTime - startTime));
+                thirdPartyCallLog.put("logType", LogTypeEnum.ThIRDPARTY.getCode());
+                thirdPartyCallLog.put("createTime", DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                thirdPartyCallLog.put("responseText", decodeXml);
+                thirdPartyCallLog.put("logId", logId);
+
                 apptoolServiceLogSender.sendThirdPartyCallLog(thirdPartyCallLog);
             }
         } catch (Exception e) {

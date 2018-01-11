@@ -108,9 +108,7 @@ public class MobileVerifyController extends BaseController {
 		response.setHeader("isUseCache", String.valueOf(false));
 		response.setHeader("channelValue", channelValue);
 
-		//String id=DateUtil.getCurrentDateTime();
-		Random random = new Random();
-		String id = cn.com.open.apptoolservice.app.utils.DateUtil.dateToString(new Date(), "yyyyMMddhh24mmssSSS") + String.valueOf(random.nextInt(9000) + 1000);
+		String id = getId(type);
 		ApptoolRecordInfo apptoolRecordInfo = apptoolRecordInfoService.findApptoolRecordInfoById(id);
    	    if(apptoolRecordInfo!=null){
    	    	responseErrorJason(response, ExceptionEnum.EntiryIsNotNull.getCode(),ExceptionEnum.EntiryIsNotNull.getMessage());
@@ -125,6 +123,9 @@ public class MobileVerifyController extends BaseController {
 					if (ignore != null && !ignore.isEmpty()) {
 						response.setHeader("logId", String.valueOf(ignore.get("logId")));
 					}
+					if (type.equals(MobileVerifyType.TCL.getCode())) {
+                        response.setHeader("logId", id);
+                    }
 					responseJason(response, result);
    	   	    	}else{
    	   	    		responseErrorJason(response, ExceptionEnum.AddEntityError);
@@ -185,4 +186,13 @@ public class MobileVerifyController extends BaseController {
     		return aliyunVerifyServiceImpl;
 		}
 	}
+
+	private String getId(String type) {
+        if (type.equals(MobileVerifyType.TCL.getCode())) {
+            return DateUtil.getCurrentDateTime();
+        } else {
+            Random random = new Random();
+            return  cn.com.open.apptoolservice.app.utils.DateUtil.dateToString(new Date(), "yyyyMMddhh24mmssSSS") + String.valueOf(random.nextInt(9000) + 1000);
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package cn.com.open.apptoolservice.app.log;
 
-import cn.com.open.apptoolservice.app.log.support.ThirdPartyCallLog;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,16 +29,6 @@ public class ApptoolServiceLogSender {
         MultiValueMap<String, Object> logMap = new LinkedMultiValueMap<>();
         logMap.add("tag", LOG_DB_NAME);
         logMap.add("logData", jsonObject.toJSONString());
-        new Thread(() -> sendLog(logMap)).start();
-    }
-
-    /**
-     * 记录服务调用第三方接口的操作日志
-     */
-    void sendThirdPartyCallLog(ThirdPartyCallLog thirdPartyCallLog) {
-        MultiValueMap<String, Object> logMap = new LinkedMultiValueMap<>();
-        logMap.add("tag", LOG_DB_NAME);
-        logMap.add("logData", JSONObject.toJSONString(thirdPartyCallLog));
         new Thread(() -> sendLog(logMap)).start();
     }
 
