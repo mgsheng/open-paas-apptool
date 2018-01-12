@@ -52,6 +52,44 @@ public class MobileVerifyControllerTest {
     }
 
     @Test
+    public void verify_tcl() {
+        String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/verify";
+        HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("number",  "13699246973");
+        param.add("idCard", "410329199312211517");
+        param.add("realName", "谷旭阳");
+        param.add("sourceUid", "10000");
+        param.add("sourceUserName", "李云龙");
+        param.add("merchantId", "10001");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(1, status);
+    }
+
+    @Test
+    public void verify_tcl_error() {
+        String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/verify";
+        HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        param.add("number",  "1369924697");
+        param.add("idCard", "410329199312211517");
+        param.add("realName", "谷旭阳");
+        param.add("sourceUid", "10000");
+        param.add("sourceUserName", "李云龙");
+        param.add("merchantId", "10001");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(0, status);
+    }
+
+    @Test
     public void verify() {
         String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/verify";
         HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
@@ -143,6 +181,25 @@ public class MobileVerifyControllerTest {
         param.add("sourceUserName", "李云龙");
         param.add("merchantId", "10001");
         param.add("type", "hehe");
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        String json = responseEntity.getBody();
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        int status = jsonObject.getInteger("status");
+        Assert.assertEquals(0, status);
+    }
+
+    @Test
+    public void verifyError_3() {
+        String url =  "http://localhost:" + port + "/api/apptoolservice/v1/mobile/verify";
+        HttpHeaders headers = SignatureUtil.getHeaders(Constant.APPKEY, Constant.APPSECRET);
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        //param.add("number",  "13699246973");
+        //param.add("idCard", "410329199312211517");
+        //param.add("realName", "谷旭阳");
+        param.add("sourceUid", "10000");
+        param.add("sourceUserName", "李云龙");
+        param.add("merchantId", "10001");
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param, headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
         String json = responseEntity.getBody();

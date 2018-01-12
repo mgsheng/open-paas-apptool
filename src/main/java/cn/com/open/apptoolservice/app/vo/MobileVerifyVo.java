@@ -11,8 +11,6 @@ public class MobileVerifyVo {
 	private String sourceUid;
 	private String sourceUserName;
 	private String merchantId;
-	private String appKey;
-	private String serviceName;
 	private String id;
 	
 	
@@ -21,18 +19,6 @@ public class MobileVerifyVo {
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public String getServiceName() {
-		return serviceName;
-	}
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
-	public String getAppKey() {
-		return appKey;
-	}
-	public void setAppKey(String appKey) {
-		this.appKey = appKey;
 	}
 	public String getNumber() {
 		return number;

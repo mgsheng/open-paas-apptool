@@ -29,29 +29,8 @@ public enum ZxptEntityEnum {
         this.message = message;
     }
 
-    public static ZxptEntityEnum getByCode(String code) {
-        ZxptEntityEnum[] values = ZxptEntityEnum.values();
-        for (ZxptEntityEnum value : values) {
-            if (value.getCode().equals(code)) {
-                return value;
-            }
-        }
-        return null;
-    }
-
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }
